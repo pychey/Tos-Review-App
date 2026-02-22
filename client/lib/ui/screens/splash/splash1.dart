@@ -1,10 +1,8 @@
 import 'package:client/ui/screens/splash/register.dart';
 import 'package:client/ui/screens/splash/splash2.dart';
-import 'package:client/ui/widgets/actions/button.dart';
 import '../../../ui/widgets/displays/splash_bottom_info.dart';
 import 'package:flutter/material.dart';
 
-import '../../theme/theme.dart';
 import 'widget/custom_app_bar.dart';
 
 class Splash1 extends StatelessWidget {

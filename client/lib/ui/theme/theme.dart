@@ -54,7 +54,7 @@ class TosReviewTextStyles {
   static TextStyle label =  TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
   static TextStyle labelBold =  TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
   static TextStyle small =  TextStyle(fontSize: 10, fontWeight: FontWeight.w400);
-
+   static TextStyle tooSmall =  TextStyle(fontSize: 8, fontWeight: FontWeight.w400);
   static TextStyle body =  TextStyle(fontSize: 13, fontWeight: FontWeight.w400);
 
   static TextStyle button =  TextStyle(fontSize: 14, fontWeight: FontWeight.bold);

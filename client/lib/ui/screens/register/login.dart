@@ -71,7 +71,12 @@ class _LoginState extends State<Login> {
       )
     );
   }
-
+  @override
+  void dispose() {
+    emailController.dispose(); 
+    passwordController.dispose(); 
+    super.dispose();      
+  }
   Widget mainWidget(){
     return SingleChildScrollView(
       child: Column(

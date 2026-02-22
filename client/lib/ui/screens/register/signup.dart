@@ -82,6 +82,13 @@ class _SignupState extends State<Signup> {
   }
 
   @override
+  void dispose() {
+    fullNameController.dispose(); 
+    emailController.dispose(); 
+    passwordController.dispose(); 
+    super.dispose();      
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(   
       extendBodyBehindAppBar: true,

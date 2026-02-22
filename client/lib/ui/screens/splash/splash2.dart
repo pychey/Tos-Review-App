@@ -1,7 +1,6 @@
 import 'package:client/ui/screens/splash/register.dart';
 import 'package:client/ui/screens/splash/splash3.dart';
 import 'package:client/ui/theme/theme.dart';
-import 'package:client/ui/widgets/actions/button.dart';
 import 'package:client/ui/widgets/displays/splash_bottom_info.dart';
 import 'package:flutter/material.dart';
 

@@ -28,7 +28,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: TosReviewTextStyles.label.copyWith(color: Colors.black, fontFamily: 'Montserrat'),
             children: [
               TextSpan(text: widget.label, ),
-              TextSpan(
+              if(widget.isRequired)TextSpan(
                 text: " *",
                 style: TextStyle(color: Colors.red),
               ),
