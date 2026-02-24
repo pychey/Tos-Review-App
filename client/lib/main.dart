@@ -1,3 +1,4 @@
+import 'package:client/services/auth_service.dart';
 import 'package:client/ui/screens/home/home.dart';
 import 'package:client/ui/screens/inspect_post/comment_view.dart';
 import 'package:client/ui/screens/inspect_post/inspect_post.dart';
@@ -25,17 +26,24 @@ import 'ui/theme/theme.dart';
 //       builder: (context) => MyApp()
 //     )
 // );
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await authService.init();
+  final loggedIn = await authService.isLoggedIn();
+  runApp(MyApp(isLoggedIn: loggedIn));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.isLoggedIn});
+
+  final bool isLoggedIn;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      // home: Splash1()
+      home: isLoggedIn ? AppRoot() : Splash1(),
       // home: Register(),
       // home: Signup(),
       // home: Login(),
@@ -45,7 +53,7 @@ class MyApp extends StatelessWidget {
       // home: Following(),
       // home: InspectPost(),
       // home: CommentView(),
-      home: AppRoot(),
+      // home: AppRoot(),
     );
   }
 }

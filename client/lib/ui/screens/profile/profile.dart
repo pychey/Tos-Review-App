@@ -1,4 +1,6 @@
+import 'package:client/services/auth_service.dart';
 import 'package:client/ui/screens/profile/following.dart';
+import 'package:client/ui/screens/register/login.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +30,15 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  void onShareProfile(){
-    print("Click share profile");
+  void onShareProfile() async {
+    await authService.logout();
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+        (route) => false,
+      );
+    }
   }
 
   void onEditProfile(){

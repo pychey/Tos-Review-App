@@ -1,3 +1,4 @@
+import 'package:client/main.dart';
 import 'package:client/ui/screens/register/signup.dart';
 import 'package:client/ui/screens/register/widget/devider.dart';
 import 'package:client/ui/widgets/actions/button.dart';
@@ -8,6 +9,9 @@ import '../../theme/theme.dart';
 import 'widget/google_login.dart';
 import 'widget/register_background.dart';
 import 'package:flutter/gestures.dart';
+
+import 'package:client/services/auth_service.dart';
+import 'package:dio/dio.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -21,16 +25,53 @@ class _LoginState extends State<Login> {
   final passwordController = TextEditingController();
   bool isChecked = false;
 
-  void onPressGoogle(){
-    print("Log with google");
+  void onLogin() async {
+    try {
+      await authService.login(
+        emailController.text,
+        passwordController.text,
+      );
+      if (mounted) {
+        // navigate to home in phase 5, for now just show success
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Logged in successfully!')),
+        );
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Invalid credentials';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    }
+  }
+
+  void onPressGoogle() async {
+    try {
+      await authService.googleSignIn();
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AppRoot()),
+          (route) => false,
+        );
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Something went wrong';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    } catch (e) {
+      if (e.toString().contains('cancelled')) return;
+      print(e.toString());
+    }
   }
 
   void onForgetPassword(){
     print("Forget Password");
-  }
-
-  void onLogin(){
-    print("Press login");
   }
 
   void onSignUp(){

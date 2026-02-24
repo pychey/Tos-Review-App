@@ -1,3 +1,4 @@
+import 'package:client/main.dart';
 import 'package:client/ui/screens/register/login.dart';
 import 'package:client/ui/theme/theme.dart';
 import 'package:client/ui/widgets/actions/button.dart';
@@ -8,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'widget/devider.dart';
 import 'widget/google_login.dart';
 import 'widget/register_background.dart';
+
+import 'package:client/services/auth_service.dart';
+import 'package:dio/dio.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -64,14 +68,52 @@ class _SignupState extends State<Signup> {
     return null;
   }
 
-  void onSignUp(){
+  void onSignUp() async {
     if (_formKey.currentState!.validate()) {
-
+      try {
+        await authService.register(
+          emailController.text,
+          fullNameController.text,
+          passwordController.text,
+        );
+        if (mounted) {
+          // navigate to home in phase 5, for now just show success
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Account created successfully!')),
+          );
+        }
+      } on DioException catch (e) {
+        final message = e.response?.data['message'] ?? 'Something went wrong';
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        }
+      }
     }
   }
 
-  void onPressGoogle(){
-    print("Log with google");
+  void onPressGoogle() async {
+    try {
+      await authService.googleSignIn();
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AppRoot()),
+          (route) => false,
+        );
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Something went wrong';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    } catch (e) {
+      if (e.toString().contains('cancelled')) return;
+      print(e.toString());
+    }
   }
 
   void onLogin(){

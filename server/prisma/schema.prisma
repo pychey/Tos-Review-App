@@ -1,0 +1,25 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Provider {
+  LOCAL
+  GOOGLE
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  name           String
+  hashedPassword String?
+  provider       Provider @default(LOCAL)
+  profileSrc     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
