@@ -15,3 +15,59 @@ export const Provider = {
 } as const
 
 export type Provider = (typeof Provider)[keyof typeof Provider]
+
+
+export const Category = {
+  FOOD: 'FOOD',
+  BEAUTY: 'BEAUTY',
+  OTHER: 'OTHER'
+} as const
+
+export type Category = (typeof Category)[keyof typeof Category]
+
+
+export const NotificationType = {
+  LIKE: 'LIKE',
+  COMMENT: 'COMMENT',
+  FOLLOW: 'FOLLOW',
+  COMMENT_LIKE: 'COMMENT_LIKE',
+  RATING: 'RATING'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN',
+  BANNED: 'BANNED'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const ReportReason = {
+  SPAM: 'SPAM',
+  INAPPROPRIATE: 'INAPPROPRIATE',
+  FAKE: 'FAKE',
+  OTHER: 'OTHER'
+} as const
+
+export type ReportReason = (typeof ReportReason)[keyof typeof ReportReason]
+
+
+export const ReportStatus = {
+  PENDING: 'PENDING',
+  REVIEWED: 'REVIEWED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const AdStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type AdStatus = (typeof AdStatus)[keyof typeof AdStatus]

@@ -13,13 +13,234 @@ enum Provider {
   GOOGLE
 }
 
+enum Category {
+  FOOD
+  BEAUTY
+  OTHER
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  FOLLOW
+  COMMENT_LIKE
+  RATING
+}
+
+enum Role {
+  USER
+  ADMIN
+  BANNED
+}
+
+enum ReportReason {
+  SPAM
+  INAPPROPRIATE
+  FAKE
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  DISMISSED
+}
+
+enum AdStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id             String   @id @default(uuid())
   email          String   @unique
   name           String
   hashedPassword String?
   provider       Provider @default(LOCAL)
+  role           Role     @default(USER)
   profileSrc     String?
+  bio            String?
+  websiteUrl     String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  posts              Post[]
+  comments           Comment[]
+  likes              Like[]
+  commentLikes       CommentLike[]
+  saves              Save[]
+  views              PostView[]
+  interests          UserInterest[]
+  ratings            Rating[]
+  reports            Report[]
+  followers          Follow[]       @relation("UserFollowers")
+  following          Follow[]       @relation("UserFollowing")
+  notifications      Notification[] @relation("NotificationReceiver")
+  actedNotifications Notification[] @relation("NotificationActor")
+}
+
+model UserInterest {
+  id        String   @id @default(uuid())
+  userId    String
+  interest  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, interest])
+}
+
+model Post {
+  id           String   @id @default(uuid())
+  authorId     String
+  productName  String
+  description  String
+  authorRating Float
+  price        Float?
+  location     String?
+  productUrl   String?
+  category     Category
+  mediaUrls    String[]
+  viewCount    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  author        User           @relation(fields: [authorId], references: [id])
+  comments      Comment[]
+  likes         Like[]
+  saves         Save[]
+  ratings       Rating[]
+  notifications Notification[]
+  views         PostView[]
+  reports       Report[]
+}
+
+model PostView {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+model Rating {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  value     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  authorId  String
+  content   String
+  mediaUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post   Post          @relation(fields: [postId], references: [id])
+  author User          @relation(fields: [authorId], references: [id])
+  likes  CommentLike[]
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  commentId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId])
+}
+
+model Save {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id])
+  following User @relation("UserFollowing", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  actorId   String
+  type      NotificationType
+  postId    String?
+  commentId String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user  User  @relation("NotificationReceiver", fields: [userId], references: [id])
+  actor User  @relation("NotificationActor", fields: [actorId], references: [id])
+  post  Post? @relation(fields: [postId], references: [id])
+}
+
+model Report {
+  id        String       @id @default(uuid())
+  postId    String
+  userId    String
+  reason    ReportReason
+  details   String?
+  status    ReportStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+model Advertisement {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  imageUrl    String
+  linkUrl     String?
+  status      AdStatus @default(INACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

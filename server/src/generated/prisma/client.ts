@@ -42,3 +42,63 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model UserInterest
+ * 
+ */
+export type UserInterest = Prisma.UserInterestModel
+/**
+ * Model Post
+ * 
+ */
+export type Post = Prisma.PostModel
+/**
+ * Model PostView
+ * 
+ */
+export type PostView = Prisma.PostViewModel
+/**
+ * Model Rating
+ * 
+ */
+export type Rating = Prisma.RatingModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model Like
+ * 
+ */
+export type Like = Prisma.LikeModel
+/**
+ * Model CommentLike
+ * 
+ */
+export type CommentLike = Prisma.CommentLikeModel
+/**
+ * Model Save
+ * 
+ */
+export type Save = Prisma.SaveModel
+/**
+ * Model Follow
+ * 
+ */
+export type Follow = Prisma.FollowModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model Report
+ * 
+ */
+export type Report = Prisma.ReportModel
+/**
+ * Model Advertisement
+ * 
+ */
+export type Advertisement = Prisma.AdvertisementModel

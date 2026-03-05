@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
@@ -17,6 +17,7 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
     if (!user || !user.hashedPassword) return null;
+    if (user.role === 'BANNED') throw new ForbiddenException('Your account has been banned');
     const match = await bcrypt.compare(password, user.hashedPassword);
     return match ? user : null;
   }
@@ -32,16 +33,16 @@ export class AuthService {
       hashedPassword,
     });
 
-    return this.signToken(user.id, user.email);
+    return this.signToken(user.id, user.email, user.role);
   }
 
-  async login(user: { id: string; email: string }) {
-    return this.signToken(user.id, user.email);
+  async login(user: { id: string; email: string, role: string }) {
+    return this.signToken(user.id, user.email, user.role);
   }
 
   async googleLogin(googleUser: { email: string; name: string; profileSrc: string }) {
     const user = await this.userService.findOrCreateGoogleUser(googleUser);
-    return this.signToken(user.id, user.email);
+    return this.signToken(user.id, user.email, user.role);
   }
 
   async googleMobileLogin(idToken: string) {
@@ -58,11 +59,12 @@ export class AuthService {
       name: payload.name!,
       profileSrc: payload.picture ?? '',
     });
+    if (user.role === 'BANNED') throw new ForbiddenException('Your account has been banned');
 
-    return this.signToken(user.id, user.email);
+    return this.signToken(user.id, user.email, user.role);
   }
 
-  private signToken(userId: string, email: string) {
-    return { access_token: this.jwtService.sign({ sub: userId, email }) };
+  private signToken(userId: string, email: string, role: string) {
+    return { access_token: this.jwtService.sign({ sub: userId, email, role }) };
   }
 }

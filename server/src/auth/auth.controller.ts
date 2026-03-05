@@ -4,40 +4,43 @@ import { RegisterDto } from './dto/register.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { ApiBody, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
+import { GoogleMobileDto } from './dto/google-mobile.dto';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiOperation({ summary: 'Register a new user' })
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
+  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiBody({ type: LoginDto })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Request() req) {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  me(@Request() req) {
-    return req.user;
-  }
-
+  @ApiExcludeEndpoint()
   @UseGuards(GoogleAuthGuard)
-  @Get('auth/google')
+  @Get('google')
   googleLogin() {}
 
+  @ApiExcludeEndpoint()
   @UseGuards(GoogleAuthGuard)
-  @Get('auth/google/callback')
+  @Get('google/callback')
   async googleCallback(@Request() req) {
     return this.authService.googleLogin(req.user);
   }
 
-  @Post('auth/google/mobile')
-  async googleMobileCallback(@Body('idToken') idToken: string) {
-    return this.authService.googleMobileLogin(idToken);
+  @ApiOperation({ summary: 'Google OAuth login for mobile' })
+  @Post('google/mobile')
+  async googleMobileCallback(@Body() dto: GoogleMobileDto) {
+    return this.authService.googleMobileLogin(dto.idToken);
   }
 }

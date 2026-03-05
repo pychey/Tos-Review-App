@@ -1,0 +1,143 @@
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { Category } from 'src/generated/prisma/enums';
+import { formatPost, postInclude } from './post.utils';
+
+@Injectable()
+export class PostService {
+  constructor(private prisma: PrismaService) {}
+
+  async createPost(userId: string, dto: CreatePostDto) {
+    return this.prisma.post.create({
+      data: {
+        authorId: userId,
+        ...dto,
+      },
+    });
+  }
+
+  async getPostById(postId: string) {
+    await this.prisma.post.update({
+      where: { id: postId },
+      data: { viewCount: { increment: 1 } },
+    });
+
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId },
+      include: postInclude
+    });
+
+    if (!post) throw new NotFoundException('Post not found');
+
+    const avgUserRating =
+      post.ratings.length > 0
+        ? post.ratings.reduce((sum, r) => sum + r.value, 0) / post.ratings.length
+        : null;
+
+    const { ratings, ...rest } = post;
+    return { ...rest, avgUserRating };
+  }
+
+  async getPostsByUser(userId: string) {
+    const posts = await this.prisma.post.findMany({
+      where: { authorId: userId },
+      orderBy: { createdAt: 'desc' },
+      include: postInclude
+    });
+    return posts.map(formatPost);
+  }
+
+  async deletePost(userId: string, postId: string) {
+    const post = await this.prisma.post.findUnique({ where: { id: postId } });
+    if (!post) throw new NotFoundException('Post not found');
+    if (post.authorId !== userId) throw new ForbiddenException('Not your post');
+
+    return this.prisma.post.delete({ where: { id: postId } });
+  }
+
+  async searchPosts(query: string, category?: Category) {
+    return this.prisma.post.findMany({
+      where: {
+        ...(query && { productName: { contains: query, mode: 'insensitive' } }),
+        ...(category && { category }),
+      },
+      orderBy: { createdAt: 'desc' },
+      include: postInclude
+    });
+  }
+
+  async recordView(userId: string, postId: string) {
+    await this.prisma.postView.upsert({
+      where: { postId_userId: { postId, userId } },
+      update: { createdAt: new Date() },
+      create: { postId, userId },
+    });
+  }
+
+  async getViewHistory(userId: string) {
+    const views = await this.prisma.postView.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        post: {
+          include: postInclude
+        },
+      },
+    });
+    return views.map((v) => ({ ...v, post: formatPost(v.post) }));
+  }
+
+  async getRelatedPosts(userId: string, postId: string) {
+    const post = await this.prisma.post.findUnique({ where: { id: postId } });
+    if (!post) throw new NotFoundException('Post not found');
+
+    const [interests, following, views] = await Promise.all([
+      this.prisma.userInterest.findMany({ where: { userId }, select: { interest: true } }),
+      this.prisma.follow.findMany({ where: { followerId: userId }, select: { followingId: true } }),
+      this.prisma.postView.findMany({ where: { userId }, select: { postId: true } }),
+    ]);
+
+    const interestKeywords = interests.map((i) => i.interest);
+    const followingSet = new Set(following.map((f) => f.followingId));
+    const viewedSet = new Set(views.map((v) => v.postId));
+
+    const candidates = await this.prisma.post.findMany({
+      where: {
+        id: { not: postId },
+        category: post.category,
+      },
+      include: postInclude,
+    });
+
+    const scored = candidates.map((candidate) => {
+      let score = 0;
+
+      // BOOST POSTS FROM FOLLOWED USERS
+      if (followingSet.has(candidate.authorId)) score += 5;
+
+      const matchesInterest = interestKeywords.some(
+        (keyword) =>
+          candidate.productName.toLowerCase().includes(keyword.toLowerCase()) ||
+          candidate.description.toLowerCase().includes(keyword.toLowerCase()),
+      );
+      if (matchesInterest) score += 4;
+
+      const postWords = post.productName.toLowerCase().split(' ');
+      const matchesPostWords = postWords.some((word) =>
+        candidate.productName.toLowerCase().includes(word),
+      );
+      if (matchesPostWords) score += 3;
+
+      // DEMOTE VIEWED POSTS
+      if (viewedSet.has(candidate.id)) score -= 3;
+
+      return { ...formatPost(candidate), score };
+    });
+
+    return scored
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10)
+      .map(({ score, ...post }) => post);
+  }
+}
