@@ -2,14 +2,19 @@ import 'package:client/services/auth_service.dart';
 import 'package:client/ui/screens/home/home.dart';
 import 'package:client/ui/screens/inspect_post/comment_view.dart';
 import 'package:client/ui/screens/inspect_post/inspect_post.dart';
+import 'package:client/ui/screens/interest/interest.dart';
 import 'package:client/ui/screens/profile/following.dart';
+import 'package:client/ui/screens/notification/notification.dart';
 import 'package:client/ui/screens/register/signup.dart';
+import 'package:client/ui/screens/search/search.dart';
 import 'package:client/ui/screens/splash/register.dart';
 import 'package:client/ui/widgets/displays/comment.dart';
 import 'package:device_preview/device_preview.dart' show DevicePreview;
 import 'package:flutter/material.dart';
 
+import 'ui/screens/create_post/create_post.dart';
 import 'ui/screens/profile/edit_profile.dart';
+import 'ui/screens/profile/follower.dart';
 import 'ui/screens/profile/profile.dart';
 import 'ui/screens/register/login.dart';
 import 'ui/screens/splash/splash1.dart';
@@ -26,6 +31,7 @@ import 'ui/theme/theme.dart';
 //       builder: (context) => MyApp()
 //     )
 // );
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await authService.init();
@@ -43,7 +49,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      home: isLoggedIn ? AppRoot() : Splash1(),
+      // home: isLoggedIn ? AppRoot() : Splash1(),
       // home: Register(),
       // home: Signup(),
       // home: Login(),
@@ -51,9 +57,13 @@ class MyApp extends StatelessWidget {
       // home: EditProfile()
       // home: Profile()
       // home: Following(),
+      // home: Follower(),
       // home: InspectPost(),
       // home: CommentView(),
-      // home: AppRoot(),
+      home: AppRoot(),
+      // home: CreatePost(),
+      // home: Search(),
+      // home: Interest(),
     );
   }
 }
@@ -66,7 +76,7 @@ class AppRoot extends StatefulWidget {
 }
 
 class _AppRootState extends State<AppRoot> {
-  int _currentTabIndex = 0;
+  int _currentTabIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +85,10 @@ class _AppRootState extends State<AppRoot> {
         index: _currentTabIndex,
         children: [
           Home(),
-          Profile()
+          NotificationScreen(),
+          CreatePost(),
+          Profile(),
+          
         ],
       ),
       extendBody: true,
@@ -110,14 +123,14 @@ class _AppRootState extends State<AppRoot> {
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Icon(Icons.house_rounded),
                 ), label: "Home"),
-                // BottomNavigationBarItem(icon: Padding(
-                //   padding: EdgeInsets.symmetric(vertical: 8),
-                //   child: Icon(Icons.bar_chart_rounded),
-                // ), label: "Notification"),
-                // BottomNavigationBarItem(icon: Padding(
-                //   padding: EdgeInsets.symmetric(vertical: 8),
-                //   child: Icon(Icons.track_changes),
-                // ), label: "Create"),
+                BottomNavigationBarItem(icon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Icon(Icons.bar_chart_rounded),
+                ), label: "Notification"),
+                BottomNavigationBarItem(icon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Icon(Icons.track_changes),
+                ), label: "Create"),
                 BottomNavigationBarItem(icon: Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Icon(Icons.person),

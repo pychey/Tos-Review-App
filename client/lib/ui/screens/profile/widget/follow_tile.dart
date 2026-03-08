@@ -3,18 +3,36 @@ import 'package:flutter/material.dart';
 import '../../../theme/theme.dart';
 
 class FollowTile extends StatefulWidget {
-  final VoidCallback onAction;
+  final ValueChanged<bool> onAction;
   final String image;
   final String name;
-  final String buttonName;
-  final bool isActive;
-  const FollowTile({super.key, required this.onAction, required this.image, required this.name, required this.buttonName, required this.isActive});
+  final String activebuttonName;
+  final String inActivebuttonName;
+  const FollowTile({super.key, required this.onAction, required this.image, required this.name, required this.activebuttonName, required this.inActivebuttonName});
 
   @override
   State<FollowTile> createState() => _FollowTileState();
 }
 
 class _FollowTileState extends State<FollowTile> {
+  bool isActive = false;
+  late String buttonName;
+
+  @override
+  void initState(){
+    buttonName = isActive ? widget.activebuttonName : widget.inActivebuttonName;
+    super.initState();
+  }
+
+  void onPressButton(){
+    widget.onAction(isActive);
+    setState(() {
+      isActive = !isActive;
+      buttonName = isActive ? widget.activebuttonName : widget.inActivebuttonName;
+    });
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -27,7 +45,6 @@ class _FollowTileState extends State<FollowTile> {
           shape: BoxShape.circle,
           color: Colors.amber
         ),
-        // child: Center(child: Text("H")),
         child: ClipOval(
           child: Image.asset(
             widget.image,
@@ -36,19 +53,7 @@ class _FollowTileState extends State<FollowTile> {
         ),
       ),
       title: Text(widget.name, style: TosReviewTextStyles.body,),
-      // trailing: GestureDetector(
-      //   onTap: widget.onAction,
-      //   child: Container(
-      //     width: 100,
-      //     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 7),
-      //     decoration: BoxDecoration(
-      //       borderRadius: BorderRadius.circular(10),
-      //       color: TosReviewColors.primary
-      //     ),
-      //     child: Text("That's you", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white), textAlign: TextAlign.center,),
-      //   ),
-      // ),
-      trailing: SmallButton(onPress: widget.onAction, name: widget.buttonName, isActive: widget.isActive, width: 120),
+      trailing: SmallButton(onPress: onPressButton, name: buttonName, isActive: isActive, width: 120),
     );
   }
 }

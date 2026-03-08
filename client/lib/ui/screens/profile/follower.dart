@@ -10,8 +10,8 @@ class Follower extends StatefulWidget {
 }
 
 class _FollowerState extends State<Follower> {
-  void onAction(){
-
+  void onAction(bool isActive){
+    print(!isActive);
   }
 
   @override
@@ -43,8 +43,8 @@ class _FollowerState extends State<Follower> {
                       onAction: onAction, 
                       image: 'assets/images/home/product1.png', 
                       name: "Leng Menghan", 
-                      buttonName: "Follow back",
-                      isActive: true,
+                      inActivebuttonName: "Follow back",
+                      activebuttonName: "Follow back",
                     );
                   }
                 ),
