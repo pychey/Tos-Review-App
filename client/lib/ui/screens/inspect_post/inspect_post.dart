@@ -9,6 +9,13 @@ import '../../widgets/actions/small_button.dart';
 import '../../widgets/displays/comment.dart';
 import 'widget/rating.dart';
 
+List<String> imagePaths = [
+  "assets/images/home/product1.png",
+  "assets/images/home/product1.png",
+  "assets/images/home/product1.png",
+  "assets/images/home/product1.png"
+];
+
 class InspectPost extends StatefulWidget {
   const InspectPost({super.key});
 
@@ -49,7 +56,10 @@ class _InspectPostState extends State<InspectPost> {
                   child: Icon(Icons.arrow_back)
                 ),
                 const SizedBox(height: TosReviewSpacings.l),
-                PostImage(),
+                // PostImage(imagePath: "assets/images/home/product1.png",),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.9,
+                  child: PostImage(imagePaths: imagePaths)),
                 const SizedBox(height: TosReviewSpacings.m),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,9 +115,8 @@ class _InspectPostState extends State<InspectPost> {
                 Comment(),
                 Comment(),
                 const SizedBox(height: TosReviewSpacings.s,),
-                // Divider(),
-                // const SizedBox(height: TosReviewSpacings.s,),
                 Text("Related Product", style: TosReviewTextStyles.labelBold.copyWith(color: TosReviewColors.primary),),
+                const SizedBox(height: TosReviewSpacings.l,),
                 GridView.builder(
                   itemCount: 10,
                   shrinkWrap: true, // VERY IMPORTANT

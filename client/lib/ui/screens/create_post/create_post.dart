@@ -1,12 +1,12 @@
 import 'package:client/ui/theme/theme.dart';
-import 'package:client/ui/widgets/actions/button.dart';
+import 'package:client/ui/screens/create_post/widget/choose_image_button.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
-import 'package:client/ui/widgets/displays/comment.dart';
+import 'package:client/ui/screens/create_post/widget/create_post_img_preview.dart';
 import 'package:flutter/material.dart';
-
+import 'package:image_picker/image_picker.dart';
 import '../../widgets/inputs/text_field.dart';
 import '../inspect_post/widget/rating.dart';
-
+import 'dart:io';
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
 
@@ -21,6 +21,33 @@ class _CreatePostState extends State<CreatePost> {
   final TextEditingController locationController = TextEditingController();
   String selectedCategory = "Food";
   bool isAnonymous = true;
+
+  final ImagePicker picker = ImagePicker();
+  List<XFile> images = [];
+
+  Future<void> pickImages() async {
+    final List<XFile>? selectedImages = await picker.pickMultiImage();
+    if (selectedImages != null && selectedImages.isNotEmpty) {
+      setState(() {
+        images.addAll(selectedImages); // ← adds new images to the list
+      });
+    }
+  }
+
+  void updateImage(int index) async {
+    final XFile? newImage = await picker.pickImage(source: ImageSource.gallery);
+    if (newImage != null) {
+      setState(() {
+        images[index] = newImage;
+      });
+    }
+  }
+
+  void removeImage(int index){
+    setState(() {
+      images.removeAt(index);
+    });
+  }
 
   String? validateProductName(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -82,15 +109,19 @@ class _CreatePostState extends State<CreatePost> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: ClipRRect(
-                   borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-                  child: Image.asset(
-                    'assets/images/home/product1.png', 
-                    fit: BoxFit.cover,
-                    width: 200,
+                child: images.isEmpty ? 
+                  ChooseImageButton(onPress: pickImages)
+                : SizedBox(
                     height: 200, 
-                  ),
-                ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: images.length + 1, 
+                      itemBuilder: (context, index) {
+                        if (index == images.length) return ChooseImageButton(onPress: pickImages);
+                        return CreatePostImgPreview(image: images[index], onEdit:() => updateImage(index), onDelete: () => removeImage(index));
+                      },
+                    ),
+                  )
               ),
               const SizedBox(height: TosReviewSpacings.xxl),
               CustomTextField(label: "Product Name", hintText: "Enter the product name", text: productNameController, validator: validateProductName, isRequired: true),
