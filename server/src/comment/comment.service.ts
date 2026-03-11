@@ -33,11 +33,11 @@ export class CommentService {
     return comment;
   }
 
-  async getCommentsByPost(postId: string) {
+  async getCommentsByPost(postId: string, userId: string) {
     const post = await this.prisma.post.findUnique({ where: { id: postId } });
     if (!post) throw new NotFoundException('Post not found');
 
-    return this.prisma.comment.findMany({
+    const comments = await this.prisma.comment.findMany({
       where: { postId },
       orderBy: { createdAt: 'desc' },
       include: {
@@ -45,6 +45,18 @@ export class CommentService {
         _count: { select: { likes: true } },
       },
     });
+
+    const likedComments = await this.prisma.commentLike.findMany({ 
+      where: { userId, commentId: { in: comments.map((c) => c.id) } },
+      select: { commentId: true },
+    });
+
+    const likedSet = new Set(likedComments.map((l) => l.commentId));
+
+    return comments.map((comment) => ({
+      ...comment,
+      isLiked: likedSet.has(comment.id),
+    }));
   }
 
   async updateComment(userId: string, commentId: string, dto: UpdateCommentDto) {
@@ -63,6 +75,7 @@ export class CommentService {
     if (!comment) throw new NotFoundException('Comment not found');
     if (comment.authorId !== userId) throw new ForbiddenException('Not your comment');
 
+    await this.prisma.commentLike.deleteMany({ where: { commentId } });
     return this.prisma.comment.delete({ where: { id: commentId } });
   }
 
@@ -78,16 +91,20 @@ export class CommentService {
       await this.prisma.commentLike.delete({
         where: { commentId_userId: { commentId, userId } },
       });
-      return { liked: false };
+    } else {
+      await this.prisma.commentLike.create({ data: { commentId, userId } });
+      await this.notificationService.createNotification({
+        userId: comment.authorId,
+        actorId: userId,
+        type: 'COMMENT_LIKE',
+        commentId,
+      });
     }
 
-    await this.prisma.commentLike.create({ data: { commentId, userId } });
-    await this.notificationService.createNotification({
-      userId: comment.authorId,
-      actorId: userId,
-      type: 'COMMENT_LIKE',
-      commentId,
+    const likeCount = await this.prisma.commentLike.count({
+      where: { commentId },
     });
-    return { liked: true };
+
+    return { liked: !existing, likeCount };
   }
 }

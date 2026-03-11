@@ -118,7 +118,26 @@ export class FeedService {
     const sorted = scored.sort((a, b) => b.score - a.score);
     const paginated = sorted.slice(skip, skip + (limit ?? 10));
 
-    const formattedPosts = paginated.map(({ score, ...post }) => ({ type: 'POST', ...post }));
+    const [likedPosts, savedPosts] = await Promise.all([
+      this.prisma.like.findMany({
+        where: { userId },
+        select: { postId: true },
+      }),
+      this.prisma.save.findMany({
+        where: { userId },
+        select: { postId: true },
+      }),
+    ]);
+
+    const likedSet = new Set(likedPosts.map((l) => l.postId));
+    const savedSet = new Set(savedPosts.map((s) => s.postId));
+
+    const formattedPosts = paginated.map(({ score, ...post }) => ({ 
+      type: 'POST', 
+      ...post,
+      isLiked: likedSet.has(post.id),
+      isSaved: savedSet.has(post.id),
+    }));
 
     const activeAds = await this.adService.getActiveAds();
     if (activeAds.length === 0) return formattedPosts;

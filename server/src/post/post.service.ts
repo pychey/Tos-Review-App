@@ -17,7 +17,19 @@ export class PostService {
     });
   }
 
-  async getPostById(postId: string) {
+  async getPostById(postId: string, userId: string) {
+    const [liked, saved, userRating] = await Promise.all([
+      this.prisma.like.findUnique({
+        where: { postId_userId: { postId, userId } },
+      }),
+      this.prisma.save.findUnique({
+        where: { postId_userId: { postId, userId } },
+      }),
+      this.prisma.rating.findUnique({
+        where: { postId_userId: { postId, userId } },
+      }),
+    ]);
+
     await this.prisma.post.update({
       where: { id: postId },
       data: { viewCount: { increment: 1 } },
@@ -36,7 +48,14 @@ export class PostService {
         : null;
 
     const { ratings, ...rest } = post;
-    return { ...rest, avgUserRating };
+    
+    return {
+      ...rest, 
+      avgUserRating, 
+      isLiked: !!liked,
+      isSaved: !!saved,
+      userRating: userRating?.value ?? null,
+    };
   }
 
   async getPostsByUser(userId: string) {

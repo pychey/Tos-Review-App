@@ -1,4 +1,6 @@
+import 'package:client/data/models/api_user.dart';
 import 'package:client/services/auth_service.dart';
+import 'package:client/services/user_service.dart';
 import 'package:client/ui/screens/profile/following.dart';
 import 'package:client/ui/screens/register/login.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
@@ -22,6 +24,26 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   Filter selectedfilter = Filter.create;
   int length = 2;
+  ApiUser? _user;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final user = await userService.getMyProfile();
+      setState(() {
+        _user = user;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+    }
+  }
 
   void onFilter(Filter selectFilter){
     setState(() {
@@ -84,7 +106,9 @@ class _ProfileState extends State<Profile> {
             ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: _isLoading
+      ? Center(child: CircularProgressIndicator(color: TosReviewColors.primary))
+      : SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(TosReviewSpacings.paddingScreen),
           child: Column(
@@ -99,14 +123,16 @@ class _ProfileState extends State<Profile> {
                   border: Border.all(color: TosReviewColors.primary)
                 ),
                 child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/home/product1.png', 
-                    fit: BoxFit.cover, 
-                  ),
+                  child: _user?.profileSrc != null
+                    ? Image.network(_user!.profileSrc!, fit: BoxFit.cover)
+                    : Image.asset(
+                      'assets/images/home/product1.png', 
+                      fit: BoxFit.cover, 
+                    ),
                 ),
               ),
               const SizedBox(height: TosReviewSpacings.m,),
-              Text("Leng Menghan", style: TosReviewTextStyles.titleBold,),
+              Text(_user?.name ?? 'Loading...', style: TosReviewTextStyles.titleBold,),
               const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +140,7 @@ class _ProfileState extends State<Profile> {
                 children: [
                   Image.asset('assets/images/logo_image.png', width: 20, height: 20,),
                   const SizedBox(width: 6),
-                  Text("mengHan24", style: TosReviewTextStyles.body,),
+                  Text(_user?.email ?? '', style: TosReviewTextStyles.body,),
                 ],
               ),
               const SizedBox(height: TosReviewSpacings.m,),
@@ -123,12 +149,12 @@ class _ProfileState extends State<Profile> {
                 children: [
                   GestureDetector(
                     onTap: onFollowing,
-                    child: Text("6 Following", style: TosReviewTextStyles.body,)
+                    child: Text("${_user?.count.following ?? 0} Following", style: TosReviewTextStyles.body,)
                   ),
                   const SizedBox(width: TosReviewSpacings.xxl,),
                   GestureDetector(
                     onTap: onFollower,
-                    child: Text("6 Follower", style: TosReviewTextStyles.body,)
+                    child: Text("${_user?.count.followers ?? 0} Follower", style: TosReviewTextStyles.body,)
                   ),
                 ],
               ),
@@ -168,7 +194,7 @@ class _ProfileState extends State<Profile> {
                   childAspectRatio: 0.7, 
                 ),
                 itemBuilder: (context, index) {
-                  return ReviewPost(onPress: (){},);
+                  return null;//ReviewPost(onPress: (){},);
                 },
               ),
             ],

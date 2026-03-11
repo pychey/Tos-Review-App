@@ -44,7 +44,7 @@ export class PostController {
   @Get(':id')
   async getPostById(@Request() req, @Param('id') id: string) {
     await this.postService.recordView(req.user.id, id);
-    return this.postService.getPostById(id);
+    return this.postService.getPostById(id, req.user.id);
   }
 
   @ApiOperation({ summary: 'Get posts by user' })

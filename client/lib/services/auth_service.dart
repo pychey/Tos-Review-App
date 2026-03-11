@@ -13,7 +13,7 @@ class AuthService {
   }
 
   Future<void> register(String email, String name, String password) async {
-    final response = await dio.post('/register', data: {
+    final response = await dio.post('/api/auth/register', data: {
       'email': email,
       'name': name,
       'password': password,
@@ -22,7 +22,7 @@ class AuthService {
   }
 
   Future<void> login(String email, String password) async {
-    final response = await dio.post('/login', data: {
+    final response = await dio.post('/api/auth/login', data: {
       'email': email,
       'password': password,
     });
@@ -35,7 +35,7 @@ class AuthService {
       final idToken = result.authentication.idToken;
       if (idToken == null) throw Exception('No ID token received');
 
-      final response = await dio.post('/auth/google/mobile', data: {
+      final response = await dio.post('/api/auth/google/mobile', data: {
         'idToken': idToken,
       });
       await _storage.write(key: 'access_token', value: response.data['access_token']);

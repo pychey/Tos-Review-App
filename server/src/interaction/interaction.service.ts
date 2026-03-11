@@ -22,17 +22,18 @@ export class InteractionService {
       await this.prisma.like.delete({
         where: { postId_userId: { postId, userId } },
       });
-      return { liked: false };
+    } else {
+      await this.prisma.like.create({ data: { postId, userId } });
+      await this.notificationService.createNotification({
+        userId: post.authorId,
+        actorId: userId,
+        type: 'LIKE',
+        postId,
+      });
     }
 
-    await this.prisma.like.create({ data: { postId, userId } });
-    await this.notificationService.createNotification({
-      userId: post.authorId,
-      actorId: userId,
-      type: 'LIKE',
-      postId,
-    });
-    return { liked: true };
+    const likeCount = await this.prisma.like.count({ where: { postId } });
+    return { liked: !existing, likeCount };
   }
 
   async savePost(userId: string, postId: string) {
@@ -58,22 +59,29 @@ export class InteractionService {
     const post = await this.prisma.post.findUnique({ where: { id: postId } });
     if (!post) throw new NotFoundException('Post not found');
 
-    await this.prisma.rating.upsert({
-      where: { postId_userId: { postId, userId } },
-      update: { value: dto.value },
-      create: { postId, userId, value: dto.value },
-    });
+    if (dto.value === 0) {
+      await this.prisma.rating.deleteMany({
+        where: { postId, userId },
+      });
+    } else {
+
+      await this.prisma.rating.upsert({
+        where: { postId_userId: { postId, userId } },
+        update: { value: dto.value },
+        create: { postId, userId, value: dto.value },
+      });
+
+      await this.notificationService.createNotification({
+        userId: post.authorId,
+        actorId: userId,
+        type: 'RATING',
+        postId,
+      });
+    }
 
     const ratings = await this.prisma.rating.findMany({
       where: { postId },
       select: { value: true },
-    });
-
-    await this.notificationService.createNotification({
-      userId: post.authorId,
-      actorId: userId,
-      type: 'RATING',
-      postId,
     });
 
     const avgUserRating = ratings.reduce((sum, r) => sum + r.value, 0) / ratings.length;

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class Rating extends StatefulWidget {
   final ValueChanged<int> onClick;
-  const Rating({super.key, required this.onClick});
+  final int initialRating;
+  const Rating({super.key, required this.onClick, this.initialRating = 0});
 
   @override
   State<Rating> createState() => _RatingState();
@@ -11,6 +12,12 @@ class Rating extends StatefulWidget {
 
 class _RatingState extends State<Rating> {
   int _rate = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _rate = widget.initialRating;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -32,9 +32,10 @@ class _LoginState extends State<Login> {
         passwordController.text,
       );
       if (mounted) {
-        // navigate to home in phase 5, for now just show success
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Logged in successfully!')),
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AppRoot()),
+          (route) => false,
         );
       }
     } on DioException catch (e) {

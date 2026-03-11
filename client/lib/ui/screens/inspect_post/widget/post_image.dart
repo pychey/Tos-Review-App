@@ -1,8 +1,11 @@
 import 'package:client/ui/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:client/data/models/post.dart';
 
 class PostImage extends StatelessWidget {
-  const PostImage({super.key});
+  final Post post;
+  final bool isLiked;
+  const PostImage({super.key, required this.post, required this.isLiked});
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +18,13 @@ class PostImage extends StatelessWidget {
               aspectRatio: 1,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-                child: Image.asset(
+                child: post.mediaUrls.isNotEmpty
+                ? Image.network(post.mediaUrls[0], fit: BoxFit.cover, color: Colors.black.withOpacity(0.15), colorBlendMode: BlendMode.hardLight)
+                : Image.asset(
                   "assets/images/home/product1.png",
                   fit: BoxFit.cover,
                   color: Colors.black.withOpacity(0.15),
-                  colorBlendMode: BlendMode.hardLight, 
+                  colorBlendMode: BlendMode.hardLight,
                 ),
               ),
             ),
@@ -34,7 +39,7 @@ class PostImage extends StatelessWidget {
               child: Column(
                 children: [
                   Icon(Icons.star, size: 30, color: Colors.yellow),
-                  Text("4.5", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+                  Text(post.avgUserRating?.toStringAsFixed(1) ?? post.authorRating.toStringAsFixed(1), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
                 ],
               ),
             ),
@@ -44,7 +49,7 @@ class PostImage extends StatelessWidget {
               child: Column(
                 children: [
                   Icon(Icons.favorite, size: 30, color: Colors.red),
-                  Text("45", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+                  Text('${post.count.likes}', style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
                 ],
               ),
             ),

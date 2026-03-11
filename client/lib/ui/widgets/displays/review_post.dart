@@ -1,10 +1,12 @@
+import 'package:client/data/models/post.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
 
 class ReviewPost extends StatelessWidget {
   final VoidCallback onPress;
-  const ReviewPost({super.key, required this.onPress});
+  final Post post;
+  const ReviewPost({super.key, required this.onPress, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,9 @@ class ReviewPost extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-            child: Image.asset(
+            child: post.mediaUrls.isNotEmpty
+            ? Image.network(post.mediaUrls[0], fit: BoxFit.cover, height: double.infinity, width: double.infinity)
+            : Image.asset(
               "assets/images/home/product1.png",
               fit: BoxFit.cover,
               height: double.infinity,
@@ -30,7 +34,7 @@ class ReviewPost extends StatelessWidget {
             child: Column(
               children: [
                 Icon(Icons.star, size: 25, color: Colors.yellow),
-                Text("4.5", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+                Text(post.avgUserRating?.toStringAsFixed(1) ?? post.authorRating.toStringAsFixed(1), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
               ],
             ),
           ),
@@ -41,7 +45,9 @@ class ReviewPost extends StatelessWidget {
             child: Row(
               children: [
                 ClipOval(
-                  child: Image.asset(
+                  child: post.author.profileSrc != null
+                  ? Image.network(post.author.profileSrc!, height: 40, width: 40, fit: BoxFit.cover)
+                  : Image.asset(
                     'assets/images/home/profile.png',
                     height: 40,
                     width: 40,
@@ -49,7 +55,7 @@ class ReviewPost extends StatelessWidget {
                 ),
                 const SizedBox(width: 2,),
                 Expanded(
-                  child: Text("Leng Menghan", style: TosReviewTextStyles.tooSmall.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),),
+                  child: Text(post.author.name, style: TosReviewTextStyles.tooSmall.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),),
                 ),
                 TextButton(
                 onPressed: (){}, 

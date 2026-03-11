@@ -21,8 +21,8 @@ export class CommentController {
   @ApiOperation({ summary: 'Get comments by post' })
   @UseGuards(JwtAuthGuard)
   @Get(':postId')
-  getCommentsByPost(@Param('postId') postId: string) {
-    return this.commentService.getCommentsByPost(postId);
+  getCommentsByPost(@Request() req, @Param('postId') postId: string) {
+    return this.commentService.getCommentsByPost(postId, req.user.id);
   }
 
   @ApiOperation({ summary: 'Update a comment' })
