@@ -1,7 +1,9 @@
+import 'package:client/ui/screens/profile/widget/button_delete_profile.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
 import 'package:client/ui/widgets/inputs/text_field.dart';
 import 'package:flutter/material.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../theme/theme.dart';
 
 class EditProfile extends StatefulWidget {
@@ -15,6 +17,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController nickNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+  File? imageFile;
 
   @override
   void initState(){
@@ -22,6 +25,23 @@ class _EditProfileState extends State<EditProfile> {
     fullNameController.text = "Leng Menghan";
     nickNameController.text = "mengHan24";
     phoneNumberController.text = "012 345 678";
+  }
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        imageFile = File(image.path); 
+      });
+    }
+  }
+
+  void deleteProfile(){
+    setState(() {
+      imageFile = null;
+    });
   }
 
   void onChange(){
@@ -84,19 +104,45 @@ class _EditProfileState extends State<EditProfile> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: TosReviewSpacings.xxl),
-              Container(
-                height: 150,
-                width: 150,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: TosReviewColors.primary)
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/home/product1.png', 
-                    fit: BoxFit.cover, 
+              Stack(
+                children: [
+                  GestureDetector(
+                    onTap: pickImage,
+                    child: Container(
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: TosReviewColors.primary,
+                          width: 2,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: imageFile != null
+                            ? Image.file(
+                                imageFile!,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                color: Colors.grey[300],
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 40,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ),
                   ),
-                ),
+                  if (imageFile != null) Positioned(
+                      right: 10,
+                      bottom: 10,
+                      child: ButtonDeleteProfile(onPress: deleteProfile),
+                    ),
+                ],
               ),
               const SizedBox(height: TosReviewSpacings.m),
               Text("Photo", style: TosReviewTextStyles.button.copyWith(color: TosReviewColors.primary),),

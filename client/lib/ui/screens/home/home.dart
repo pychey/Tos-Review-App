@@ -1,6 +1,7 @@
 import 'package:client/data/models/post.dart';
 import 'package:client/services/post_service.dart';
 import 'package:client/ui/screens/inspect_post/inspect_post.dart';
+import 'package:client/ui/screens/search/search.dart';
 import 'package:client/ui/widgets/displays/review_post.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +60,15 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("All", style: TosReviewTextStyles.labelBold.copyWith(color: TosReviewColors.primary),),
-                    Icon(Icons.search, size: 30,)
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Search()),
+                        );
+                      },
+                      child: Icon(Icons.search, size: 30,)
+                    )
                   ],
                 ),
               ),

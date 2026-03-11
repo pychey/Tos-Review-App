@@ -190,7 +190,10 @@ class _InspectPostState extends State<InspectPost> {
                     child: Icon(Icons.arrow_back),
                   ),
                   const SizedBox(height: TosReviewSpacings.l),
-                  PostImage(post: _post!, isLiked: _isLiked),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.9,
+                    child: PostImage(post: _post!, isLiked: _isLiked)
+                  ),
                   const SizedBox(height: TosReviewSpacings.m),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
