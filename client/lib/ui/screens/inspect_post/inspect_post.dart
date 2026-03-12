@@ -90,7 +90,6 @@ class _InspectPostState extends State<InspectPost> {
   }
 
   Future<void> _onRate(int value) async {
-    final bool wasRated = _userRating > 0;
     final result = await postService.ratePost(widget.postId, value.toDouble());
     setState(() {
       _userRating = value.toDouble();
