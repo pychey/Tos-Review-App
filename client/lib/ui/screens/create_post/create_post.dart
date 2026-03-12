@@ -1,7 +1,9 @@
+import 'package:client/services/post_service.dart';
 import 'package:client/ui/theme/theme.dart';
 import 'package:client/ui/screens/create_post/widget/choose_image_button.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
 import 'package:client/ui/screens/create_post/widget/create_post_img_preview.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/inputs/text_field.dart';
@@ -19,8 +21,9 @@ class _CreatePostState extends State<CreatePost> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
-  String selectedCategory = "Food";
+  String selectedCategory = "FOOD";
   bool isAnonymous = true;
+  double _authorRating = 0;
 
   final ImagePicker picker = ImagePicker();
   List<XFile> images = [];
@@ -77,8 +80,43 @@ class _CreatePostState extends State<CreatePost> {
     return null;
   }
 
-  void onCreate(){
+  void onCreate() async {
+    if (_authorRating == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a rating')),
+      );
+      return;
+    }
 
+    try {
+      List<String> mediaUrls = [];
+      for (final image in images) {
+        final url = await postService.uploadFile(image);
+        mediaUrls.add(url);
+      }
+
+      await postService.createPost(
+        productName: productNameController.text,
+        description: descriptionController.text,
+        authorRating: _authorRating,
+        category: selectedCategory,
+        isAnonymous: isAnonymous,
+        price: priceController.text.isNotEmpty ? double.tryParse(priceController.text) : null,
+        location: locationController.text,
+        mediaUrls: mediaUrls,
+      );
+
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Something went wrong';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    }
   }
 
   @override
@@ -126,11 +164,11 @@ class _CreatePostState extends State<CreatePost> {
               const SizedBox(height: TosReviewSpacings.xxl),
               CustomTextField(label: "Product Name", hintText: "Enter the product name", text: productNameController, validator: validateProductName, isRequired: true),
               const SizedBox(height: TosReviewSpacings.m),
-              CustomTextField(label: "Description", hintText: "Enter the description", text: productNameController, validator: validateDescription, isRequired: true),
+              CustomTextField(label: "Description", hintText: "Enter the description", text: descriptionController, validator: validateDescription, isRequired: true),
               const SizedBox(height: TosReviewSpacings.m),
-              CustomTextField(label: "Price", hintText: "Enter the price", text: productNameController, validator: validatePrice, isRequired: true),
+              CustomTextField(label: "Price", hintText: "Enter the price", text: priceController, validator: validatePrice, isRequired: true),
               const SizedBox(height: TosReviewSpacings.m),
-              CustomTextField(label: "Location", hintText: "Enter the location", text: productNameController, validator: validateLoaction, isRequired: true),
+              CustomTextField(label: "Location", hintText: "Enter the location", text: locationController, validator: validateLoaction, isRequired: true),
               const SizedBox(height: TosReviewSpacings.m),
               RichText(
                 text: TextSpan(
@@ -177,16 +215,16 @@ class _CreatePostState extends State<CreatePost> {
                 style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark,fontSize: 16, fontFamily: 'Montserrat'),
                 items: [
                   DropdownMenuItem<String>(
-                    value: "Food", 
+                    value: "FOOD", 
                     child: Text("Food", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark),)
                   ),
                   DropdownMenuItem<String>(
-                    value: "Skincare", 
-                    child: Text("Skincare", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark),)
+                    value: "BEAUTY", 
+                    child: Text("Beauty", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark),)
                   ),
                   DropdownMenuItem<String>(
-                    value: "Clothing", 
-                    child: Text("Clothing", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark),)
+                    value: "OTHER", 
+                    child: Text("Other", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark),)
                   )
                 ],
                 onChanged: (value) {
@@ -200,12 +238,18 @@ class _CreatePostState extends State<CreatePost> {
                   return [
                     Text("Food", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
                     Text("Skincare", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
-                    Text("Clothing", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
+                    Text("Other", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
                   ];
                 },
               ),
               const SizedBox(height: TosReviewSpacings.m),
-              Rating(onClick: (value){}),
+              Rating(
+                onClick: (value) {
+                  setState(() {
+                    _authorRating = value.toDouble();
+                  });
+                },
+              ),
               const SizedBox(height: TosReviewSpacings.m),
               Row(
                 children: [

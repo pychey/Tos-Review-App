@@ -1,6 +1,9 @@
+import 'package:client/services/post_service.dart';
+import 'package:client/services/user_service.dart';
 import 'package:client/ui/screens/profile/widget/button_delete_profile.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
 import 'package:client/ui/widgets/inputs/text_field.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -14,17 +17,22 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  TextEditingController fullNameController = TextEditingController();
-  TextEditingController nickNameController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
+  TextEditingController websiteUrlController = TextEditingController();
   File? imageFile;
+  String? _existingProfileSrc;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    fullNameController.text = "Leng Menghan";
-    nickNameController.text = "mengHan24";
-    phoneNumberController.text = "012 345 678";
+    final user = userService.cachedUser;
+    if (user != null) {
+      nameController.text = user.name;
+      bioController.text = user.bio ?? '';
+      websiteUrlController.text = user.websiteUrl ?? '';
+      _existingProfileSrc = user.profileSrc;
+    }
   }
 
   Future<void> pickImage() async {
@@ -44,8 +52,25 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  void onChange(){
-
+  void onChange() async {
+    try {
+      String? profileSrc = _existingProfileSrc;
+      if (imageFile != null) {
+        profileSrc = await postService.uploadFile(XFile(imageFile!.path));
+      }
+      await userService.updateProfile(
+        name: nameController.text,
+        bio: bioController.text.isNotEmpty ? bioController.text : null,
+        websiteUrl: websiteUrlController.text.isNotEmpty ? websiteUrlController.text : null,
+        profileSrc: profileSrc,
+      );
+      if (mounted) Navigator.pop(context);
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Something went wrong';
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      }
+    }
   }
 
   String? validateFullName(String? value) {
@@ -76,11 +101,12 @@ class _EditProfileState extends State<EditProfile> {
   }
   @override
   void dispose() {
-    fullNameController.dispose(); 
-    nickNameController.dispose(); 
-    phoneNumberController.dispose(); 
-    super.dispose();      
+    nameController.dispose();
+    bioController.dispose();
+    websiteUrlController.dispose();
+    super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,19 +146,12 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       child: ClipOval(
                         child: imageFile != null
-                            ? Image.file(
-                                imageFile!,
-                                fit: BoxFit.cover,
-                              )
+                          ? Image.file(imageFile!, fit: BoxFit.cover)
+                          : _existingProfileSrc != null
+                            ? Image.network(_existingProfileSrc!, fit: BoxFit.cover)
                             : Container(
                                 color: Colors.grey[300],
-                                child: Center(
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 40,
-                                    color: Colors.black54,
-                                  ),
-                                ),
+                                child: Center(child: Icon(Icons.add, size: 40, color: Colors.black54)),
                               ),
                       ),
                     ),
@@ -149,12 +168,11 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: TosReviewSpacings.m),
               SmallButton(onPress: onChange, name: "Change", isActive: true,),
               const SizedBox(height: TosReviewSpacings.m),
-              CustomTextField(label: "Full name", hintText: "", text: fullNameController, validator: validateFullName, isRequired: false),
+              CustomTextField(label: "Full name", hintText: "", text: nameController, validator: validateFullName, isRequired: true),
               const SizedBox(height: TosReviewSpacings.m),
-              CustomTextField(label: "Nick name", hintText: "", text: nickNameController, validator: validateFullName, isRequired: false),
+              CustomTextField(label: "Bio", hintText: "Tell us about yourself", text: bioController, validator: null, isRequired: false),
               const SizedBox(height: TosReviewSpacings.m),
-              CustomTextField(label: "Phone number", hintText: "", text: phoneNumberController, validator: validateFullName, isRequired: false),
-        
+              CustomTextField(label: "Website URL", hintText: "https://...", text: websiteUrlController, validator: null, isRequired: false),
             ],
           ),
         ),

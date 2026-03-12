@@ -51,6 +51,7 @@ export type PostMinAggregateOutputType = {
   viewCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  isAnonymous: boolean | null
 }
 
 export type PostMaxAggregateOutputType = {
@@ -66,6 +67,7 @@ export type PostMaxAggregateOutputType = {
   viewCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  isAnonymous: boolean | null
 }
 
 export type PostCountAggregateOutputType = {
@@ -82,6 +84,7 @@ export type PostCountAggregateOutputType = {
   viewCount: number
   createdAt: number
   updatedAt: number
+  isAnonymous: number
   _all: number
 }
 
@@ -111,6 +114,7 @@ export type PostMinAggregateInputType = {
   viewCount?: true
   createdAt?: true
   updatedAt?: true
+  isAnonymous?: true
 }
 
 export type PostMaxAggregateInputType = {
@@ -126,6 +130,7 @@ export type PostMaxAggregateInputType = {
   viewCount?: true
   createdAt?: true
   updatedAt?: true
+  isAnonymous?: true
 }
 
 export type PostCountAggregateInputType = {
@@ -142,6 +147,7 @@ export type PostCountAggregateInputType = {
   viewCount?: true
   createdAt?: true
   updatedAt?: true
+  isAnonymous?: true
   _all?: true
 }
 
@@ -245,6 +251,7 @@ export type PostGroupByOutputType = {
   viewCount: number
   createdAt: Date
   updatedAt: Date
+  isAnonymous: boolean
   _count: PostCountAggregateOutputType | null
   _avg: PostAvgAggregateOutputType | null
   _sum: PostSumAggregateOutputType | null
@@ -284,6 +291,7 @@ export type PostWhereInput = {
   viewCount?: Prisma.IntFilter<"Post"> | number
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+  isAnonymous?: Prisma.BoolFilter<"Post"> | boolean
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
   likes?: Prisma.LikeListRelationFilter
@@ -308,6 +316,7 @@ export type PostOrderByWithRelationInput = {
   viewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isAnonymous?: Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
   likes?: Prisma.LikeOrderByRelationAggregateInput
@@ -335,6 +344,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   viewCount?: Prisma.IntFilter<"Post"> | number
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+  isAnonymous?: Prisma.BoolFilter<"Post"> | boolean
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
   likes?: Prisma.LikeListRelationFilter
@@ -359,6 +369,7 @@ export type PostOrderByWithAggregationInput = {
   viewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isAnonymous?: Prisma.SortOrder
   _count?: Prisma.PostCountOrderByAggregateInput
   _avg?: Prisma.PostAvgOrderByAggregateInput
   _max?: Prisma.PostMaxOrderByAggregateInput
@@ -383,6 +394,7 @@ export type PostScalarWhereWithAggregatesInput = {
   viewCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
+  isAnonymous?: Prisma.BoolWithAggregatesFilter<"Post"> | boolean
 }
 
 export type PostCreateInput = {
@@ -398,6 +410,7 @@ export type PostCreateInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
@@ -422,6 +435,7 @@ export type PostUncheckedCreateInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
@@ -444,6 +458,7 @@ export type PostUpdateInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
@@ -468,6 +483,7 @@ export type PostUncheckedUpdateInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
@@ -491,6 +507,7 @@ export type PostCreateManyInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
 }
 
 export type PostUpdateManyMutationInput = {
@@ -506,6 +523,7 @@ export type PostUpdateManyMutationInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PostUncheckedUpdateManyInput = {
@@ -522,6 +540,7 @@ export type PostUncheckedUpdateManyInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PostListRelationFilter = {
@@ -556,6 +575,7 @@ export type PostCountOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isAnonymous?: Prisma.SortOrder
 }
 
 export type PostAvgOrderByAggregateInput = {
@@ -577,6 +597,7 @@ export type PostMaxOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isAnonymous?: Prisma.SortOrder
 }
 
 export type PostMinOrderByAggregateInput = {
@@ -592,6 +613,7 @@ export type PostMinOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isAnonymous?: Prisma.SortOrder
 }
 
 export type PostSumOrderByAggregateInput = {
@@ -687,6 +709,10 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type PostCreateNestedOneWithoutViewsInput = {
@@ -802,6 +828,7 @@ export type PostCreateWithoutAuthorInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveCreateNestedManyWithoutPostInput
@@ -824,6 +851,7 @@ export type PostUncheckedCreateWithoutAuthorInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
@@ -876,6 +904,7 @@ export type PostScalarWhereInput = {
   viewCount?: Prisma.IntFilter<"Post"> | number
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+  isAnonymous?: Prisma.BoolFilter<"Post"> | boolean
 }
 
 export type PostCreateWithoutViewsInput = {
@@ -891,6 +920,7 @@ export type PostCreateWithoutViewsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
@@ -914,6 +944,7 @@ export type PostUncheckedCreateWithoutViewsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
@@ -951,6 +982,7 @@ export type PostUpdateWithoutViewsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
@@ -974,6 +1006,7 @@ export type PostUncheckedUpdateWithoutViewsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
@@ -995,6 +1028,7 @@ export type PostCreateWithoutRatingsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
@@ -1018,6 +1052,7 @@ export type PostUncheckedCreateWithoutRatingsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
@@ -1055,6 +1090,7 @@ export type PostUpdateWithoutRatingsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
@@ -1078,6 +1114,7 @@ export type PostUncheckedUpdateWithoutRatingsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
@@ -1099,6 +1136,7 @@ export type PostCreateWithoutCommentsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveCreateNestedManyWithoutPostInput
@@ -1122,6 +1160,7 @@ export type PostUncheckedCreateWithoutCommentsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
   ratings?: Prisma.RatingUncheckedCreateNestedManyWithoutPostInput
@@ -1159,6 +1198,7 @@ export type PostUpdateWithoutCommentsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUpdateManyWithoutPostNestedInput
@@ -1182,6 +1222,7 @@ export type PostUncheckedUpdateWithoutCommentsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
   ratings?: Prisma.RatingUncheckedUpdateManyWithoutPostNestedInput
@@ -1203,6 +1244,7 @@ export type PostCreateWithoutLikesInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveCreateNestedManyWithoutPostInput
@@ -1226,6 +1268,7 @@ export type PostUncheckedCreateWithoutLikesInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
   ratings?: Prisma.RatingUncheckedCreateNestedManyWithoutPostInput
@@ -1263,6 +1306,7 @@ export type PostUpdateWithoutLikesInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUpdateManyWithoutPostNestedInput
@@ -1286,6 +1330,7 @@ export type PostUncheckedUpdateWithoutLikesInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
   ratings?: Prisma.RatingUncheckedUpdateManyWithoutPostNestedInput
@@ -1307,6 +1352,7 @@ export type PostCreateWithoutSavesInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
@@ -1330,6 +1376,7 @@ export type PostUncheckedCreateWithoutSavesInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   ratings?: Prisma.RatingUncheckedCreateNestedManyWithoutPostInput
@@ -1367,6 +1414,7 @@ export type PostUpdateWithoutSavesInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
@@ -1390,6 +1438,7 @@ export type PostUncheckedUpdateWithoutSavesInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   ratings?: Prisma.RatingUncheckedUpdateManyWithoutPostNestedInput
@@ -1411,6 +1460,7 @@ export type PostCreateWithoutNotificationsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
@@ -1434,6 +1484,7 @@ export type PostUncheckedCreateWithoutNotificationsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
@@ -1471,6 +1522,7 @@ export type PostUpdateWithoutNotificationsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
@@ -1494,6 +1546,7 @@ export type PostUncheckedUpdateWithoutNotificationsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
@@ -1515,6 +1568,7 @@ export type PostCreateWithoutReportsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   author: Prisma.UserCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeCreateNestedManyWithoutPostInput
@@ -1538,6 +1592,7 @@ export type PostUncheckedCreateWithoutReportsInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutPostInput
   saves?: Prisma.SaveUncheckedCreateNestedManyWithoutPostInput
@@ -1575,6 +1630,7 @@ export type PostUpdateWithoutReportsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
@@ -1598,6 +1654,7 @@ export type PostUncheckedUpdateWithoutReportsInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
@@ -1619,6 +1676,7 @@ export type PostCreateManyAuthorInput = {
   viewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  isAnonymous?: boolean
 }
 
 export type PostUpdateWithoutAuthorInput = {
@@ -1634,6 +1692,7 @@ export type PostUpdateWithoutAuthorInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUpdateManyWithoutPostNestedInput
@@ -1656,6 +1715,7 @@ export type PostUncheckedUpdateWithoutAuthorInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutPostNestedInput
   saves?: Prisma.SaveUncheckedUpdateManyWithoutPostNestedInput
@@ -1678,6 +1738,7 @@ export type PostUncheckedUpdateManyWithoutAuthorInput = {
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -1779,6 +1840,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   viewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isAnonymous?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
   likes?: boolean | Prisma.Post$likesArgs<ExtArgs>
@@ -1804,6 +1866,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   viewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isAnonymous?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
@@ -1821,6 +1884,7 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   viewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isAnonymous?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
@@ -1838,9 +1902,10 @@ export type PostSelectScalar = {
   viewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isAnonymous?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "productName" | "description" | "authorRating" | "price" | "location" | "productUrl" | "category" | "mediaUrls" | "viewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "productName" | "description" | "authorRating" | "price" | "location" | "productUrl" | "category" | "mediaUrls" | "viewCount" | "createdAt" | "updatedAt" | "isAnonymous", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
@@ -1885,6 +1950,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     viewCount: number
     createdAt: Date
     updatedAt: Date
+    isAnonymous: boolean
   }, ExtArgs["result"]["post"]>
   composites: {}
 }
@@ -2329,6 +2395,7 @@ export interface PostFieldRefs {
   readonly viewCount: Prisma.FieldRef<"Post", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Post", 'DateTime'>
+  readonly isAnonymous: Prisma.FieldRef<"Post", 'Boolean'>
 }
     
 

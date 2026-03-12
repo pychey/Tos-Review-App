@@ -1,59 +1,54 @@
+import 'package:client/ui/screens/profile/user_profile.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
 import 'package:flutter/material.dart';
 import '../../../theme/theme.dart';
 
-class FollowTile extends StatefulWidget {
-  final ValueChanged<bool> onAction;
-  final String image;
+class FollowTile extends StatelessWidget {
+  final String? image;
   final String name;
-  final String activebuttonName;
-  final String inActivebuttonName;
-  const FollowTile({super.key, required this.onAction, required this.image, required this.name, required this.activebuttonName, required this.inActivebuttonName});
+  final bool isActive;
+  final VoidCallback onAction;
+  final bool isMe;
+  final String authorId;
 
-  @override
-  State<FollowTile> createState() => _FollowTileState();
-}
-
-class _FollowTileState extends State<FollowTile> {
-  bool isActive = false;
-  late String buttonName;
-
-  @override
-  void initState(){
-    buttonName = isActive ? widget.activebuttonName : widget.inActivebuttonName;
-    super.initState();
-  }
-
-  void onPressButton(){
-    widget.onAction(isActive);
-    setState(() {
-      isActive = !isActive;
-      buttonName = isActive ? widget.activebuttonName : widget.inActivebuttonName;
-    });
-    
-  }
+  const FollowTile({
+    super.key,
+    this.image,
+    required this.name,
+    required this.isActive,
+    required this.onAction,
+    required this.isMe,
+    required this.authorId
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       dense: true,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UserProfile(userId: authorId)),
+      ),
       contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
       leading: Container(
         height: 45,
         width: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.amber
-        ),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey[300]),
         child: ClipOval(
-          child: Image.asset(
-            widget.image,
-            fit: BoxFit.cover,
-          ),
+          child: image != null
+            ? Image.network(image!, fit: BoxFit.cover)
+            : Image.asset('assets/images/home/product1.png', fit: BoxFit.cover),
         ),
       ),
-      title: Text(widget.name, style: TosReviewTextStyles.body,),
-      trailing: SmallButton(onPress: onPressButton, name: buttonName, isActive: isActive, width: 120),
+      title: Text(name, style: TosReviewTextStyles.body),
+      trailing: isMe 
+      ? null
+      : SmallButton(
+        onPress: onAction,
+        name: isActive ? 'Follow' : 'Followed',
+        isActive: isActive,
+        width: 120,
+      ),
     );
   }
 }

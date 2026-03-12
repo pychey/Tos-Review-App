@@ -1,4 +1,6 @@
 import 'package:client/main.dart';
+import 'package:client/services/user_service.dart';
+import 'package:client/ui/screens/interest/interest.dart';
 import 'package:client/ui/screens/register/signup.dart';
 import 'package:client/ui/screens/register/widget/devider.dart';
 import 'package:client/ui/widgets/actions/button.dart';
@@ -31,12 +33,21 @@ class _LoginState extends State<Login> {
         emailController.text,
         passwordController.text,
       );
+      final interests = await userService.getInterests();
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => AppRoot()),
-          (route) => false,
-        );
+        if (interests.isEmpty) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => Interest()),
+            (route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => AppRoot()),
+            (route) => false,
+          );
+        }
       }
     } on DioException catch (e) {
       final message = e.response?.data['message'] ?? 'Invalid credentials';
@@ -52,11 +63,22 @@ class _LoginState extends State<Login> {
     try {
       await authService.googleSignIn();
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => AppRoot()),
-          (route) => false,
-        );
+        final interests = await userService.getInterests();
+        if (mounted) {
+          if (interests.isEmpty) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Interest()),
+              (route) => false,
+            );
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => AppRoot()),
+              (route) => false,
+            );
+          }
+        }
       }
     } on DioException catch (e) {
       final message = e.response?.data['message'] ?? 'Something went wrong';

@@ -122,7 +122,8 @@ export const PostScalarFieldEnum = {
   mediaUrls: 'mediaUrls',
   viewCount: 'viewCount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isAnonymous: 'isAnonymous'
 } as const
 
 export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]

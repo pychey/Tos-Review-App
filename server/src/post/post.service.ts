@@ -9,12 +9,15 @@ export class PostService {
   constructor(private prisma: PrismaService) {}
 
   async createPost(userId: string, dto: CreatePostDto) {
-    return this.prisma.post.create({
+    const post = await this.prisma.post.create({
       data: {
         authorId: userId,
         ...dto,
       },
+      include: postInclude,
     });
+
+    return formatPost(post, userId);
   }
 
   async getPostById(postId: string, userId: string) {
@@ -48,10 +51,16 @@ export class PostService {
         : null;
 
     const { ratings, ...rest } = post;
-    
+
+    const isOwner = userId === post.authorId;
+    const author = post.isAnonymous && !isOwner
+      ? { id: null, name: 'Anonymous', profileSrc: null }
+      : post.author;
+
     return {
-      ...rest, 
-      avgUserRating, 
+      ...rest,
+      author,
+      avgUserRating,
       isLiked: !!liked,
       isSaved: !!saved,
       userRating: userRating?.value ?? null,
@@ -64,7 +73,7 @@ export class PostService {
       orderBy: { createdAt: 'desc' },
       include: postInclude
     });
-    return posts.map(formatPost);
+    return posts.map(p => formatPost(p, userId));
   }
 
   async deletePost(userId: string, postId: string) {
@@ -75,8 +84,8 @@ export class PostService {
     return this.prisma.post.delete({ where: { id: postId } });
   }
 
-  async searchPosts(query: string, category?: Category) {
-    return this.prisma.post.findMany({
+  async searchPosts(query: string, userId: string, category?: Category) {
+    const posts = await this.prisma.post.findMany({
       where: {
         ...(query && { productName: { contains: query, mode: 'insensitive' } }),
         ...(category && { category }),
@@ -84,6 +93,8 @@ export class PostService {
       orderBy: { createdAt: 'desc' },
       include: postInclude
     });
+    
+    return posts.map(p => formatPost(p, userId));
   }
 
   async recordView(userId: string, postId: string) {
@@ -104,7 +115,7 @@ export class PostService {
         },
       },
     });
-    return views.map((v) => ({ ...v, post: formatPost(v.post) }));
+    return views.map((v) => ({ ...v, post: formatPost(v.post, userId) }));
   }
 
   async getRelatedPosts(userId: string, postId: string) {
@@ -151,7 +162,7 @@ export class PostService {
       // DEMOTE VIEWED POSTS
       if (viewedSet.has(candidate.id)) score -= 3;
 
-      return { ...formatPost(candidate), score };
+      return { ...formatPost(candidate, userId), score };
     });
 
     return scored

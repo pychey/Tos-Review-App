@@ -1,3 +1,4 @@
+import 'package:client/ui/screens/profile/user_profile.dart';
 import 'package:flutter/material.dart';
 import '../../theme/theme.dart';
 import 'package:client/data/models/comment.dart';
@@ -51,18 +52,24 @@ class CommentWidget extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 20),
       child: Column(
         children: [
-          Row(
-            children: [
-              ClipOval(
-                child: comment.author.profileSrc != null
-                ? Image.network(comment.author.profileSrc!, height: 40, width: 40, fit: BoxFit.cover)
-                : Image.asset('assets/images/home/product1.png', height: 40, width: 40, fit: BoxFit.cover),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(comment.author.name, style: TosReviewTextStyles.body.copyWith(fontWeight: FontWeight.bold, color: TosReviewColors.greyDark)),
-              ),
-            ],
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserProfile(userId: comment.author.id)),
+            ),
+            child: Row(
+              children: [
+                ClipOval(
+                  child: comment.author.profileSrc != null
+                  ? Image.network(comment.author.profileSrc!, height: 40, width: 40, fit: BoxFit.cover)
+                  : Image.asset('assets/images/home/product1.png', height: 40, width: 40, fit: BoxFit.cover),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(comment.author.name, style: TosReviewTextStyles.body.copyWith(fontWeight: FontWeight.bold, color: TosReviewColors.greyDark)),
+                ),
+              ],
+            ),
           ),
           Row(
             children: [

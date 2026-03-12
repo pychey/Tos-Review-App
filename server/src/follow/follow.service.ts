@@ -35,6 +35,13 @@ export class FollowService {
     return { following: true };
   }
 
+  async isFollowing(followerId: string, followingId: string) {
+    const existing = await this.prisma.follow.findUnique({
+      where: { followerId_followingId: { followerId, followingId } },
+    });
+    return { isFollowing: !!existing };
+  }
+
   async getFollowers(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');

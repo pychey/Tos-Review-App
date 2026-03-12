@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Category } from 'src/generated/prisma/enums';
 
@@ -23,12 +23,17 @@ export class CreatePostDto {
   @IsEnum(Category)
   category: Category;
 
+  @ApiPropertyOptional({ example: false })
+  @IsBoolean() 
+  @IsOptional() 
+  isAnonymous?: boolean
+
   @ApiPropertyOptional({ example: 15.99 })
   @IsOptional()
   @IsNumber()
   price?: number;
 
-  @ApiPropertyOptional({ example: 'Bangkok' })
+  @ApiPropertyOptional({ example: 'Phnom Penh' })
   @IsOptional()
   @IsString()
   location?: string;

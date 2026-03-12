@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:client/services/user_service.dart';
 import 'package:client/ui/screens/inspect_post/comment_view.dart';
 import 'package:client/ui/screens/inspect_post/widget/post_image.dart';
+import 'package:client/ui/screens/profile/user_profile.dart';
 import 'package:client/ui/widgets/displays/review_post.dart';
 import 'package:flutter/material.dart';
 import 'package:client/data/models/post.dart';
@@ -218,18 +219,24 @@ class _InspectPostState extends State<InspectPost> {
                     ],
                   ),
                   const SizedBox(height: TosReviewSpacings.s),
-                  Row(
-                    children: [
-                      ClipOval(
-                        child: _post?.author.profileSrc != null
-                          ? Image.network(_post!.author.profileSrc!, height: 50, width: 50, fit: BoxFit.cover)
-                          : Image.asset('assets/images/home/product1.png', height: 50, width: 50, fit: BoxFit.cover),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(_post?.author.name ?? '', style: TosReviewTextStyles.labelBold.copyWith(fontWeight: FontWeight.bold, color: TosReviewColors.greyDark)),
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserProfile(userId: _post!.author.id)),
+                    ),
+                    child: Row(
+                      children: [
+                        ClipOval(
+                          child: _post?.author.profileSrc != null
+                            ? Image.network(_post!.author.profileSrc!, height: 50, width: 50, fit: BoxFit.cover)
+                            : Image.asset('assets/images/home/product1.png', height: 50, width: 50, fit: BoxFit.cover),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(_post?.author.name ?? '', style: TosReviewTextStyles.labelBold.copyWith(fontWeight: FontWeight.bold, color: TosReviewColors.greyDark)),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: TosReviewSpacings.s),
                   Text(_post?.productName ?? '', style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),

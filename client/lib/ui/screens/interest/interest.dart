@@ -1,3 +1,5 @@
+import 'package:client/main.dart';
+import 'package:client/services/user_service.dart';
 import 'package:client/ui/screens/interest/widget/interest_item.dart';
 import 'package:client/ui/widgets/actions/meduim_button.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +43,24 @@ class _InterestState extends State<Interest> {
     });
   }
 
-  void onNext(){
-
+  void onNext() async {
+    if (selectedItems.isEmpty) return;
+    await userService.saveInterests(selectedItems);
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => AppRoot()),
+        (route) => false,
+      );
+    }
   }
 
-  void onSkip(){
-
+  void onSkip() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => AppRoot()),
+      (route) => false,
+    );
   }
 
   Color get bgNextButton => selectedItems.isEmpty ? TosReviewColors.gradientLight : TosReviewColors.primary;

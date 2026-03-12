@@ -29,4 +29,11 @@ export class FollowController {
   getFollowing(@Param('userId') userId: string) {
     return this.followService.getFollowing(userId);
   }
+
+  @ApiOperation({ summary: 'Check if following a user' })
+  @UseGuards(JwtAuthGuard)
+  @Get(':userId/is-following')
+  isFollowing(@Request() req, @Param('userId') userId: string) {
+    return this.followService.isFollowing(req.user.id, userId);
+  }
 }

@@ -1,6 +1,9 @@
 import 'package:client/data/models/api_user.dart';
+import 'package:client/data/models/post.dart';
 import 'package:client/services/auth_service.dart';
+import 'package:client/services/post_service.dart';
 import 'package:client/services/user_service.dart';
+import 'package:client/ui/screens/inspect_post/inspect_post.dart';
 import 'package:client/ui/screens/profile/following.dart';
 import 'package:client/ui/screens/register/login.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
@@ -26,6 +29,8 @@ class _ProfileState extends State<Profile> {
   int length = 2;
   ApiUser? _user;
   bool _isLoading = true;
+  List<Post> _posts = [];
+  List<Post> _savedPosts = [];
 
   @override
   void initState() {
@@ -36,8 +41,12 @@ class _ProfileState extends State<Profile> {
   Future<void> _loadProfile() async {
     try {
       final user = await userService.getMyProfile();
+      final posts = await postService.getMyPosts(user.id);
+      final savedPosts = await postService.getSavedPosts();
       setState(() {
         _user = user;
+        _posts = posts;
+        _savedPosts = savedPosts;
         _isLoading = false;
       });
     } catch (e) {
@@ -47,7 +56,6 @@ class _ProfileState extends State<Profile> {
 
   void onFilter(Filter selectFilter){
     setState(() {
-      length = selectFilter == Filter.create ? 2 : 5;
       selectedfilter = selectFilter;
     });
   }
@@ -70,17 +78,17 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void onFollowing(){
+  void onFollowing() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Following()),
+      MaterialPageRoute(builder: (context) => Following(userId: userService.currentUserId!)),
     );
   }
 
-  void onFollower(){
+  void onFollower() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Follower()),
+      MaterialPageRoute(builder: (context) => Follower(userId: userService.currentUserId!)),
     );
   }
 
@@ -149,12 +157,12 @@ class _ProfileState extends State<Profile> {
                 children: [
                   GestureDetector(
                     onTap: onFollowing,
-                    child: Text("${_user?.count.following ?? 0} Following", style: TosReviewTextStyles.body,)
+                    child: Text("${_user?.count.followers ?? 0} Following", style: TosReviewTextStyles.body,)
                   ),
                   const SizedBox(width: TosReviewSpacings.xxl,),
                   GestureDetector(
                     onTap: onFollower,
-                    child: Text("${_user?.count.followers ?? 0} Follower", style: TosReviewTextStyles.body,)
+                    child: Text("${_user?.count.following ?? 0} Follower", style: TosReviewTextStyles.body,)
                   ),
                 ],
               ),
@@ -184,17 +192,24 @@ class _ProfileState extends State<Profile> {
               ),
               const SizedBox(height: TosReviewSpacings.m,),
               GridView.builder(
-                itemCount: length,
-                shrinkWrap: true, 
-                physics: const NeverScrollableScrollPhysics(), 
+                itemCount: selectedfilter == Filter.create ? _posts.length : _savedPosts.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 15,
                   mainAxisSpacing: 15,
-                  childAspectRatio: 0.7, 
+                  childAspectRatio: 0.7,
                 ),
                 itemBuilder: (context, index) {
-                  return null;//ReviewPost(onPress: (){},);
+                  final post = selectedfilter == Filter.create ? _posts[index] : _savedPosts[index];
+                  return ReviewPost(
+                    onPress: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InspectPost(postId: post.id)),
+                    ),
+                    post: post,
+                  );
                 },
               ),
             ],

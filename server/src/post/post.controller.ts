@@ -21,8 +21,8 @@ export class PostController {
   @ApiOperation({ summary: 'Search posts' })
   @UseGuards(JwtAuthGuard)
   @Get('search')
-  searchPosts(@Query('q') q: string, @Query('category') category?: Category) {
-    return this.postService.searchPosts(q, category);
+  searchPosts(@Request() req, @Query('q') q: string, @Query('category') category?: Category) {
+    return this.postService.searchPosts(q, req.user.id, category);
   }
 
   @ApiOperation({ summary: 'Get view history' })

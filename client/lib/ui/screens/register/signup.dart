@@ -1,4 +1,6 @@
 import 'package:client/main.dart';
+import 'package:client/services/user_service.dart';
+import 'package:client/ui/screens/interest/interest.dart';
 import 'package:client/ui/screens/register/login.dart';
 import 'package:client/ui/theme/theme.dart';
 import 'package:client/ui/widgets/actions/button.dart';
@@ -76,12 +78,21 @@ class _SignupState extends State<Signup> {
           fullNameController.text,
           passwordController.text,
         );
+        final interests = await userService.getInterests();
         if (mounted) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => AppRoot()),
-            (route) => false,
-          );
+          if (interests.isEmpty) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Interest()),
+              (route) => false,
+            );
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => AppRoot()),
+              (route) => false,
+            );
+          }
         }
       } on DioException catch (e) {
         final message = e.response?.data['message'] ?? 'Something went wrong';
@@ -97,12 +108,21 @@ class _SignupState extends State<Signup> {
   void onPressGoogle() async {
     try {
       await authService.googleSignIn();
+      final interests = await userService.getInterests();
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => AppRoot()),
-          (route) => false,
-        );
+        if (interests.isEmpty) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => Interest()),
+            (route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => AppRoot()),
+            (route) => false,
+          );
+        }
       }
     } on DioException catch (e) {
       final message = e.response?.data['message'] ?? 'Something went wrong';

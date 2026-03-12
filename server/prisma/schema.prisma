@@ -104,6 +104,7 @@ model Post {
   viewCount    Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  isAnonymous Boolean @default(false)
 
   author        User           @relation(fields: [authorId], references: [id])
   comments      Comment[]

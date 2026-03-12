@@ -21,10 +21,10 @@ class PostCount {
   PostCount({required this.likes, required this.comments, required this.saves, required this.ratings});
 
   factory PostCount.fromJson(Map<String, dynamic> json) => PostCount(
-    likes: json['likes'],
-    comments: json['comments'],
-    saves: json['saves'],
-    ratings: json['ratings'],
+    likes: json['likes'] ?? 0,
+    comments: json['comments'] ?? 0,
+    saves: json['saves'] ?? 0,
+    ratings: json['ratings'] ?? 0,
   );
 }
 

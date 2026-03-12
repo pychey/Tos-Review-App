@@ -49,46 +49,48 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: _isLoading
       ? Center(child: CircularProgressIndicator(color: TosReviewColors.primary))
-      : SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("All", style: TosReviewTextStyles.labelBold.copyWith(color: TosReviewColors.primary),),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Search()),
-                        );
-                      },
-                      child: Icon(Icons.search, size: 30,)
-                    )
-                  ],
+      : SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("All", style: TosReviewTextStyles.labelBold.copyWith(color: TosReviewColors.primary),),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Search()),
+                          );
+                        },
+                        child: Icon(Icons.search, size: 30,)
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: TosReviewSpacings.l,),
-              GridView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: _posts.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(), 
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                  childAspectRatio: 0.7, 
+                const SizedBox(height: TosReviewSpacings.l,),
+                GridView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: _posts.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(), 
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    childAspectRatio: 0.7, 
+                  ),
+                  itemBuilder: (context, index) {
+                    return ReviewPost(onPress: () => onPressPost(_posts[index].id), post: _posts[index],);
+                  },
                 ),
-                itemBuilder: (context, index) {
-                  return ReviewPost(onPress: () => onPressPost(_posts[index].id), post: _posts[index],);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

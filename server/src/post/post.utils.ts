@@ -10,11 +10,17 @@ export const postInclude = {
   },
 };
 
-export function formatPost(post: any) {
+export function formatPost(post: any, requestingUserId?: string) {
   const { ratings, ...rest } = post;
   const avgUserRating =
     ratings.length > 0
       ? ratings.reduce((sum: number, r: { value: number }) => sum + r.value, 0) / ratings.length
       : null;
-  return { ...rest, avgUserRating };
+
+  const isOwner = requestingUserId === post.authorId;
+  const author = post.isAnonymous && !isOwner
+    ? { id: null, name: 'Anonymous', profileSrc: null }
+    : rest.author;
+
+  return { ...rest, author, avgUserRating };
 }

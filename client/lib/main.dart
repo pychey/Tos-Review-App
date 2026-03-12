@@ -76,7 +76,7 @@ class AppRoot extends StatefulWidget {
 }
 
 class _AppRootState extends State<AppRoot> {
-  int _currentTabIndex = 1;
+  int _currentTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
