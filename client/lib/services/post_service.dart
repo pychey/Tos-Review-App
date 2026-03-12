@@ -94,6 +94,24 @@ class PostService {
     final List data = response.data;
     return data.map((item) => Post.fromJson(item)).toList();
   }
+
+  Future<void> reportPost(String postId, String reason, {String? details}) async {
+    await dio.post('/api/reports/$postId', data: {
+      'reason': reason,
+      if (details != null && details.isNotEmpty) 'details': details,
+    });
+  }
+
+  Future<List<Post>> getViewHistory() async {
+    final response = await dio.get('/api/posts/history');
+    final List data = response.data;
+    return data.map((item) => Post.fromJson(item['post'])).toList();
+  }
+
+  Future<String> getShareLink(String postId) async {
+    final response = await dio.get('/api/posts/$postId/share');
+    return response.data['link'];
+  }
 }
 
 final postService = PostService();

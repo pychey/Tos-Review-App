@@ -27,17 +27,17 @@ class ReviewPost extends StatelessWidget {
               colorBlendMode: BlendMode.hardLight, 
             ),
           ),
-          
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Column(
-              children: [
-                Icon(Icons.star, size: 25, color: Colors.yellow),
-                Text(post.avgUserRating?.toStringAsFixed(1) ?? post.authorRating.toStringAsFixed(1), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
-              ],
+          if (post.avgUserRating != null)
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Column(
+                children: [
+                  Icon(Icons.star, size: 25, color: Colors.yellow),
+                  Text(post.avgUserRating!.toStringAsFixed(1), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+                ],
+              ),
             ),
-          ),
           Positioned(
             bottom: 0,
             left: 5,

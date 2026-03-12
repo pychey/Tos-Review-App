@@ -80,17 +80,15 @@ class _AppRootState extends State<AppRoot> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentTabIndex,
-        children: [
+    List<Widget> screens = [
           Home(),
           NotificationScreen(),
           CreatePost(),
           Profile(),
           
-        ],
-      ),
+        ];
+    return Scaffold(
+      body: screens[_currentTabIndex],
       extendBody: true,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 20), 

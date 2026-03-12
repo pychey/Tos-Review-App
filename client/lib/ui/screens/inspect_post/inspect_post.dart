@@ -7,6 +7,7 @@ import 'package:client/ui/widgets/displays/review_post.dart';
 import 'package:flutter/material.dart';
 import 'package:client/data/models/post.dart';
 import 'package:client/services/post_service.dart';
+import 'package:flutter/services.dart';
 import '../../../utils/animations_util.dart';
 import '../../theme/theme.dart';
 import '../../widgets/actions/small_button.dart';
@@ -167,11 +168,96 @@ class _InspectPostState extends State<InspectPost> {
     await _refreshComments();
   }
 
+  void _showReportSheet() {
+    String? selectedReason;
+    final detailsController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => StatefulBuilder(
+        builder: (context, setSheetState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20, right: 20, top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Report Post', style: TosReviewTextStyles.titleBold),
+              const SizedBox(height: 12),
+              ...['SPAM', 'INAPPROPRIATE', 'FAKE', 'OTHER'].map((reason) =>
+                RadioListTile<String>(
+                  title: Text(reason),
+                  value: reason,
+                  groupValue: selectedReason,
+                  activeColor: TosReviewColors.primary,
+                  onChanged: (val) => setSheetState(() => selectedReason = val),
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: detailsController,
+                decoration: const InputDecoration(
+                  hintText: 'Additional details (optional)',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: TosReviewColors.primary),
+                  onPressed: selectedReason == null ? null : () async {
+                    Navigator.pop(context);
+                    try {
+                      await postService.reportPost(
+                        widget.postId, selectedReason!,
+                        details: detailsController.text,
+                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Post reported successfully')),
+                      );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('You have already reported this post')),
+                      );
+                      }
+                    }
+                  },
+                  child: const Text('Submit', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void onPressPost(String postId) async {
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => InspectPost(postId: postId)),
     );
+  }
+
+  Future<void> _sharePost() async {
+    final link = await postService.getShareLink(widget.postId);
+    await Clipboard.setData(ClipboardData(text: link));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Link copied to clipboard')),
+    );
+    }
   }
 
   @override
@@ -214,6 +300,19 @@ class _InspectPostState extends State<InspectPost> {
                             isActive: _isSaved,
                             width: 70,
                           ),
+                          const SizedBox(width: 10),
+                          if (_post!.author.id != userService.currentUserId)
+                            PopupMenuButton<String>(
+                              icon: const Icon(Icons.more_vert),
+                              onSelected: (value) {
+                                if (value == 'report') _showReportSheet();
+                                if (value == 'share') _sharePost();
+                              },
+                              itemBuilder: (_) => const [
+                                PopupMenuItem(value: 'share', child: Text('Share')),
+                                PopupMenuItem(value: 'report', child: Text('Report')),
+                              ],
+                            ),
                         ],
                       ),
                     ],

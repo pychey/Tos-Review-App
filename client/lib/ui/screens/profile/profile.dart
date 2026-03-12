@@ -5,6 +5,7 @@ import 'package:client/services/post_service.dart';
 import 'package:client/services/user_service.dart';
 import 'package:client/ui/screens/inspect_post/inspect_post.dart';
 import 'package:client/ui/screens/profile/following.dart';
+import 'package:client/ui/screens/profile/view_history.dart';
 import 'package:client/ui/screens/register/login.dart';
 import 'package:client/ui/widgets/actions/small_button.dart';
 import 'package:flutter/material.dart';
@@ -167,12 +168,28 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               const SizedBox(height: TosReviewSpacings.l,),
-              SmallButton(
-                onPress: onEditProfile, 
-                name: "Edit Profile",
-                width: 150,
-                icon: Icons.edit,
-                isActive: true,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SmallButton(
+                    onPress: onEditProfile,
+                    name: "Edit Profile",
+                    width: 130,
+                    icon: Icons.edit,
+                    isActive: true,
+                  ),
+                  const SizedBox(width: 10),
+                  SmallButton(
+                    onPress: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ViewHistory()),
+                    ),
+                    name: "History",
+                    width: 110,
+                    icon: Icons.history,
+                    isActive: false,
+                  ),
+                ],
               ),
               const SizedBox(height: TosReviewSpacings.l,),
               Row(
