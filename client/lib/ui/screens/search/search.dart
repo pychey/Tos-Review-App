@@ -43,95 +43,108 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: TextFormField(
-                  controller: _searchController,
-                  onChanged: (value) => _onSearch(value),
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, size: 30),
-                    fillColor: const Color.fromARGB(255, 232, 223, 223),
-                    filled: true,
-                    hintText: "Search",
-                    isDense: true,
-                    hintStyle: TextStyle(color: Colors.black),
-                    contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-                      borderSide: BorderSide(color: TosReviewColors.greyDark, width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-                      borderSide: BorderSide(color: TosReviewColors.primary, width: 2),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-                      borderSide: BorderSide(color: TosReviewColors.primary, width: 2),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-                      borderSide: BorderSide(color: TosReviewColors.primary, width: 2),
-                    ),
-                  ),
-                  style: TosReviewTextStyles.body,
-                ),
-              ),
-              const SizedBox(height: TosReviewSpacings.m),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [null, 'FOOD', 'BEAUTY', 'OTHER'].map((cat) {
-                    final label = cat == null ? 'All' : cat[0] + cat.substring(1).toLowerCase();
-                    final isSelected = _selectedCategory == cat;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: Text(label),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          setState(() => _selectedCategory = cat);
-                          _onSearch(_searchController.text);
-                        },
-                        selectedColor: TosReviewColors.primary,
-                        labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(Icons.arrow_back_ios_new),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: TosReviewSpacings.l),
-              _isLoading
-                ? Center(child: CircularProgressIndicator(color: TosReviewColors.primary))
-                : _results.isEmpty
-                  ? Center(child: Text('No results found', style: TosReviewTextStyles.body))
-                  : GridView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: _results.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemBuilder: (context, index) {
-                        final post = _results[index];
-                        return ReviewPost(
-                          onPress: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => InspectPost(postId: post.id)),
+                      const SizedBox(width: TosReviewSpacings.m),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _searchController,
+                          onChanged: (value) => _onSearch(value),
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search, size: 30),
+                            fillColor: const Color.fromARGB(255, 232, 223, 223),
+                            filled: true,
+                            hintText: "Search",
+                            isDense: true,
+                            hintStyle: TextStyle(color: Colors.black),
+                            contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
+                              borderSide: BorderSide(color: TosReviewColors.greyDark, width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
+                              borderSide: BorderSide(color: TosReviewColors.primary, width: 2),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
+                              borderSide: BorderSide(color: TosReviewColors.primary, width: 2),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
+                              borderSide: BorderSide(color: TosReviewColors.primary, width: 2),
+                            ),
                           ),
-                          post: post,
-                        );
-                      },
-                    ),
-            ],
+                          style: TosReviewTextStyles.body,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: TosReviewSpacings.m),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [null, 'FOOD', 'BEAUTY', 'OTHER'].map((cat) {
+                      final label = cat == null ? 'All' : cat[0] + cat.substring(1).toLowerCase();
+                      final isSelected = _selectedCategory == cat;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ChoiceChip(
+                          label: Text(label),
+                          selected: isSelected,
+                          onSelected: (_) {
+                            setState(() => _selectedCategory = cat);
+                            _onSearch(_searchController.text);
+                          },
+                          selectedColor: TosReviewColors.primary,
+                          labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: TosReviewSpacings.l),
+                _isLoading
+                  ? Center(child: CircularProgressIndicator(color: TosReviewColors.primary))
+                  : _results.isEmpty
+                    ? Center(child: Text('No results found', style: TosReviewTextStyles.body))
+                    : GridView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: _results.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 15,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemBuilder: (context, index) {
+                          final post = _results[index];
+                          return ReviewPost(
+                            onPress: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => InspectPost(postId: post.id)),
+                            ),
+                            post: post,
+                          );
+                        },
+                      ),
+              ],
+            ),
           ),
         ),
       ),

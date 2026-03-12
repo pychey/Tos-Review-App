@@ -1,12 +1,12 @@
 class PostAuthor {
-  final String id;
+  final String? id;  // was: final String id
   final String name;
   final String? profileSrc;
 
-  PostAuthor({required this.id, required this.name, this.profileSrc});
+  PostAuthor({this.id, required this.name, this.profileSrc});  // was: required this.id
 
   factory PostAuthor.fromJson(Map<String, dynamic> json) => PostAuthor(
-    id: json['id'],
+    id: json['id'],      // no change needed, already handles null
     name: json['name'],
     profileSrc: json['profileSrc'],
   );

@@ -15,7 +15,7 @@ import '../../widgets/displays/review_post.dart';
 import 'edit_profile.dart';
 import 'follower.dart';
 enum Filter{
-  create,
+  created,
   saved
 }
 class Profile extends StatefulWidget {
@@ -26,7 +26,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Filter selectedfilter = Filter.create;
+  Filter selectedfilter = Filter.created;
   int length = 2;
   ApiUser? _user;
   bool _isLoading = true;
@@ -72,11 +72,12 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  void onEditProfile(){
-    Navigator.push(
+  void onEditProfile() async {
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EditProfile()),
     );
+    _loadProfile();
   }
 
   void onFollowing() {
@@ -209,7 +210,7 @@ class _ProfileState extends State<Profile> {
               ),
               const SizedBox(height: TosReviewSpacings.m,),
               GridView.builder(
-                itemCount: selectedfilter == Filter.create ? _posts.length : _savedPosts.length,
+                itemCount: selectedfilter == Filter.created ? _posts.length : _savedPosts.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -219,13 +220,14 @@ class _ProfileState extends State<Profile> {
                   childAspectRatio: 0.7,
                 ),
                 itemBuilder: (context, index) {
-                  final post = selectedfilter == Filter.create ? _posts[index] : _savedPosts[index];
+                  final post = selectedfilter == Filter.created ? _posts[index] : _savedPosts[index];
                   return ReviewPost(
                     onPress: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => InspectPost(postId: post.id)),
                     ),
                     post: post,
+                    showAuthorInfo: false,
                   );
                 },
               ),

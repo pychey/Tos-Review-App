@@ -1,76 +1,125 @@
 import 'package:client/data/models/post.dart';
+import 'package:client/services/follow_service.dart';
+import 'package:client/services/user_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/theme.dart';
 
-class ReviewPost extends StatelessWidget {
+class ReviewPost extends StatefulWidget {
   final VoidCallback onPress;
   final Post post;
-  const ReviewPost({super.key, required this.onPress, required this.post});
+  final bool showAuthorInfo;
+  const ReviewPost({super.key, required this.onPress, required this.post, this.showAuthorInfo = true});
+
+  @override
+  State<ReviewPost> createState() => _ReviewPostState();
+}
+
+class _ReviewPostState extends State<ReviewPost> {
+  bool? _isFollowing;
+
+  bool get _shouldShowFollowButton =>
+      widget.post.author.id != null &&
+      widget.post.author.id != userService.currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showAuthorInfo && _shouldShowFollowButton) {
+      _loadFollowStatus();
+    }
+  }
+
+  Future<void> _loadFollowStatus() async {
+    try {
+      final result = await followService.isFollowing(widget.post.author.id!);
+      if (mounted) setState(() => _isFollowing = result);
+    } catch (_) {
+      if (mounted) setState(() => _isFollowing = false);
+    }
+  }
+
+  Future<void> _toggleFollow() async {
+    try {
+      final result = await followService.followUser(widget.post.author.id!);
+      if (mounted) setState(() => _isFollowing = result);
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPress,
+      onTap: widget.onPress,
       child: Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(TosReviewSpacings.radius),
-            child: post.mediaUrls.isNotEmpty
-            ? Image.network(post.mediaUrls[0], fit: BoxFit.cover, height: double.infinity, width: double.infinity)
-            : Image.asset(
-              "assets/images/home/product1.png",
-              fit: BoxFit.cover,
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.black.withOpacity(0.15),
-              colorBlendMode: BlendMode.hardLight, 
-            ),
+            child: widget.post.mediaUrls.isNotEmpty
+                ? Image.network(widget.post.mediaUrls[0], fit: BoxFit.cover, height: double.infinity, width: double.infinity)
+                : Image.asset(
+                    "assets/images/home/product1.png",
+                    fit: BoxFit.cover,
+                    height: double.infinity,
+                    width: double.infinity,
+                    color: Colors.black.withOpacity(0.15),
+                    colorBlendMode: BlendMode.hardLight,
+                  ),
           ),
-          if (post.avgUserRating != null)
+          if (widget.post.avgUserRating != null)
             Positioned(
               top: 10,
               right: 10,
               child: Column(
                 children: [
                   Icon(Icons.star, size: 25, color: Colors.yellow),
-                  Text(post.avgUserRating!.toStringAsFixed(1), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+                  Text(
+                    '${widget.post.avgUserRating!.toStringAsFixed(1)} (${widget.post.count.ratings})',
+                    style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),
+                  )
                 ],
               ),
             ),
-          Positioned(
-            bottom: 0,
-            left: 5,
-            right: 5,
-            child: Row(
-              children: [
-                ClipOval(
-                  child: post.author.profileSrc != null
-                  ? Image.network(post.author.profileSrc!, height: 40, width: 40, fit: BoxFit.cover)
-                  : Image.asset(
-                    'assets/images/home/profile.png',
-                    height: 40,
-                    width: 40,
+          if (widget.showAuthorInfo)
+            Positioned(
+              bottom: 0,
+              left: 5,
+              right: 5,
+              child: Row(
+                children: [
+                  ClipOval(
+                    child: widget.post.author.profileSrc != null
+                        ? Image.network(widget.post.author.profileSrc!, height: 40, width: 40, fit: BoxFit.cover)
+                        : Image.asset('assets/images/home/profile.png', height: 40, width: 40),
                   ),
-                ),
-                const SizedBox(width: 2,),
-                Expanded(
-                  child: Text(post.author.name, style: TosReviewTextStyles.tooSmall.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),),
-                ),
-                TextButton(
-                onPressed: (){}, 
-                style: TextButton.styleFrom(
-                  backgroundColor: TosReviewColors.greyLight,
-                  padding: const EdgeInsets.all(5),       // small padding
-                  minimumSize: Size.zero, 
-                ),
-                child: Text(
-                  "Follow", 
-                  style: TosReviewTextStyles.tooSmall.copyWith(color: TosReviewColors.primary, fontWeight: FontWeight.bold))
-                )
-              ],
+                  const SizedBox(width: 2),
+                  Expanded(
+                    child: Text(
+                      widget.post.author.name,
+                      style: TosReviewTextStyles.tooSmall.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  if (_shouldShowFollowButton)
+                    _isFollowing == null
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : TextButton(
+                            onPressed: _toggleFollow,
+                            style: TextButton.styleFrom(
+                              backgroundColor: _isFollowing! ? Colors.transparent : TosReviewColors.greyLight,
+                              padding: const EdgeInsets.all(5),
+                              minimumSize: Size.zero,
+                              side: _isFollowing! ? const BorderSide(color: Colors.white) : BorderSide.none,
+                            ),
+                            child: Text(
+                              _isFollowing! ? "Following" : "Follow",
+                              style: TosReviewTextStyles.tooSmall.copyWith(
+                                color: _isFollowing! ? Colors.white : TosReviewColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                ],
+              ),
             ),
-          )
         ],
       ),
     );

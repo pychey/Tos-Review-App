@@ -90,10 +90,19 @@ class _InspectPostState extends State<InspectPost> {
   }
 
   Future<void> _onRate(int value) async {
+    final bool wasRated = _userRating > 0;
     final result = await postService.ratePost(widget.postId, value.toDouble());
     setState(() {
       _userRating = value.toDouble();
-      _post = _post!.copyWith(avgUserRating: result['avgUserRating']?.toDouble());
+      _post = _post!.copyWith(
+        avgUserRating: result['avgUserRating']?.toDouble(),
+        count: PostCount(
+          likes: _post!.count.likes,
+          comments: _post!.count.comments,
+          saves: _post!.count.saves,
+          ratings: result['ratingCount'] ?? _post!.count.ratings,
+        ),
+      );
     });
   }
 
@@ -297,7 +306,7 @@ class _InspectPostState extends State<InspectPost> {
                           SmallButton(
                             onPress: _toggleSave,
                             name: _isSaved ? "Saved" : "Save",
-                            isActive: _isSaved,
+                            isActive: !_isSaved,
                             width: 70,
                           ),
                           const SizedBox(width: 10),
@@ -319,16 +328,16 @@ class _InspectPostState extends State<InspectPost> {
                   ),
                   const SizedBox(height: TosReviewSpacings.s),
                   GestureDetector(
-                    onTap: () => Navigator.push(
+                    onTap: () => _post?.author.id == null ? null : Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UserProfile(userId: _post!.author.id)),
+                      MaterialPageRoute(builder: (context) => UserProfile(userId: _post!.author.id!)),
                     ),
                     child: Row(
                       children: [
                         ClipOval(
                           child: _post?.author.profileSrc != null
                             ? Image.network(_post!.author.profileSrc!, height: 50, width: 50, fit: BoxFit.cover)
-                            : Image.asset('assets/images/home/product1.png', height: 50, width: 50, fit: BoxFit.cover),
+                            : Image.asset('assets/images/home/profile.png', height: 50, width: 50, fit: BoxFit.cover),
                         ),
                         const SizedBox(width: 10),
                         Expanded(

@@ -9,7 +9,7 @@ class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final bool isPassword;
   final bool isRequired;
-  const CustomTextField ({super.key, required this.label, required this.hintText, required this.text, this.islength = false, required this.validator, this.isPassword = false, required this.isRequired});
+  const CustomTextField ({super.key, required this.label, required this.hintText, required this.text, this.islength = false, this.validator, this.isPassword = false, this.isRequired = false});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();

@@ -85,6 +85,6 @@ export class InteractionService {
     });
 
     const avgUserRating = ratings.reduce((sum, r) => sum + r.value, 0) / ratings.length;
-    return { avgUserRating };
+    return { avgUserRating, ratingCount: ratings.length };
   }
 }

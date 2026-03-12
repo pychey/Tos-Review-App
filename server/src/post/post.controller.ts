@@ -50,8 +50,8 @@ export class PostController {
   @ApiOperation({ summary: 'Get posts by user' })
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  getPostsByUser(@Param('userId') userId: string) {
-    return this.postService.getPostsByUser(userId);
+  getPostsByUser(@Request() req, @Param('userId') userId: string) {
+    return this.postService.getPostsByUser(userId, req.user.id);
   }
 
   @ApiOperation({ summary: 'Delete post' })

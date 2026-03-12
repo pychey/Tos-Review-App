@@ -43,8 +43,10 @@ class PostImage extends StatelessWidget {
           right: 20,
           child: Column(
             children: [
-              Icon(Icons.star, size: 30, color: Colors.yellow),
-              Text(post.avgUserRating?.toStringAsFixed(1) ?? post.authorRating.toStringAsFixed(1), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+              if (post.avgUserRating != null) ...[
+                Icon(Icons.star, size: 30, color: Colors.yellow),
+                Text('${post.avgUserRating!.toStringAsFixed(1)} (${post.count.ratings})', style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.white, fontWeight: FontWeight.bold),)
+              ]
             ],
           ),
         ),

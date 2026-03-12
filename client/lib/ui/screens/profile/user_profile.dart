@@ -146,6 +146,7 @@ class _UserProfileState extends State<UserProfile> {
                           MaterialPageRoute(builder: (context) => InspectPost(postId: post.id)),
                         ),
                         post: post,
+                        showAuthorInfo: false,
                       );
                     },
                   ),

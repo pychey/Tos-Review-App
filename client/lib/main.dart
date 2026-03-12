@@ -83,7 +83,7 @@ class _AppRootState extends State<AppRoot> {
     List<Widget> screens = [
           Home(),
           NotificationScreen(),
-          CreatePost(),
+          CreatePost(onCreated: () => setState(() => _currentTabIndex = 0)),
           Profile(),
           
         ];

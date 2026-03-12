@@ -67,13 +67,17 @@ export class PostService {
     };
   }
 
-  async getPostsByUser(userId: string) {
+  async getPostsByUser(userId: string, requestingUserId: string) {
+    const isOwnProfile = userId === requestingUserId;
     const posts = await this.prisma.post.findMany({
-      where: { authorId: userId },
+      where: {
+        authorId: userId,
+        ...(!isOwnProfile && { isAnonymous: false }),  // hide anonymous posts from others
+      },
       orderBy: { createdAt: 'desc' },
       include: postInclude
     });
-    return posts.map(p => formatPost(p, userId));
+    return posts.map(p => formatPost(p, requestingUserId));
   }
 
   async deletePost(userId: string, postId: string) {
