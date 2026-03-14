@@ -18,4 +18,13 @@ export class CreateAdDto {
   @IsOptional()
   @IsUrl()
   linkUrl?: string;
+
+  @ApiProperty({ example: 'Nike' })
+  @IsString()
+  brandName: string;
+
+  @ApiPropertyOptional({ example: 'https://res.cloudinary.com/...' })
+  @IsOptional()
+  @IsString()
+  brandLogo?: string;
 }

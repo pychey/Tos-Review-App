@@ -241,6 +241,8 @@ model Advertisement {
   description String
   imageUrl    String
   linkUrl     String?
+  brandName   String
+  brandLogo   String?
   status      AdStatus @default(INACTIVE)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
