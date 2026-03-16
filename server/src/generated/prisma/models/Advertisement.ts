@@ -30,6 +30,8 @@ export type AdvertisementMinAggregateOutputType = {
   description: string | null
   imageUrl: string | null
   linkUrl: string | null
+  brandName: string | null
+  brandLogo: string | null
   status: $Enums.AdStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +43,8 @@ export type AdvertisementMaxAggregateOutputType = {
   description: string | null
   imageUrl: string | null
   linkUrl: string | null
+  brandName: string | null
+  brandLogo: string | null
   status: $Enums.AdStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +56,8 @@ export type AdvertisementCountAggregateOutputType = {
   description: number
   imageUrl: number
   linkUrl: number
+  brandName: number
+  brandLogo: number
   status: number
   createdAt: number
   updatedAt: number
@@ -65,6 +71,8 @@ export type AdvertisementMinAggregateInputType = {
   description?: true
   imageUrl?: true
   linkUrl?: true
+  brandName?: true
+  brandLogo?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +84,8 @@ export type AdvertisementMaxAggregateInputType = {
   description?: true
   imageUrl?: true
   linkUrl?: true
+  brandName?: true
+  brandLogo?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +97,8 @@ export type AdvertisementCountAggregateInputType = {
   description?: true
   imageUrl?: true
   linkUrl?: true
+  brandName?: true
+  brandLogo?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +183,8 @@ export type AdvertisementGroupByOutputType = {
   description: string
   imageUrl: string
   linkUrl: string | null
+  brandName: string
+  brandLogo: string | null
   status: $Enums.AdStatus
   createdAt: Date
   updatedAt: Date
@@ -203,6 +217,8 @@ export type AdvertisementWhereInput = {
   description?: Prisma.StringFilter<"Advertisement"> | string
   imageUrl?: Prisma.StringFilter<"Advertisement"> | string
   linkUrl?: Prisma.StringNullableFilter<"Advertisement"> | string | null
+  brandName?: Prisma.StringFilter<"Advertisement"> | string
+  brandLogo?: Prisma.StringNullableFilter<"Advertisement"> | string | null
   status?: Prisma.EnumAdStatusFilter<"Advertisement"> | $Enums.AdStatus
   createdAt?: Prisma.DateTimeFilter<"Advertisement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Advertisement"> | Date | string
@@ -214,6 +230,8 @@ export type AdvertisementOrderByWithRelationInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  brandName?: Prisma.SortOrder
+  brandLogo?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -228,6 +246,8 @@ export type AdvertisementWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"Advertisement"> | string
   imageUrl?: Prisma.StringFilter<"Advertisement"> | string
   linkUrl?: Prisma.StringNullableFilter<"Advertisement"> | string | null
+  brandName?: Prisma.StringFilter<"Advertisement"> | string
+  brandLogo?: Prisma.StringNullableFilter<"Advertisement"> | string | null
   status?: Prisma.EnumAdStatusFilter<"Advertisement"> | $Enums.AdStatus
   createdAt?: Prisma.DateTimeFilter<"Advertisement"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Advertisement"> | Date | string
@@ -239,6 +259,8 @@ export type AdvertisementOrderByWithAggregationInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  brandName?: Prisma.SortOrder
+  brandLogo?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -256,6 +278,8 @@ export type AdvertisementScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"Advertisement"> | string
   imageUrl?: Prisma.StringWithAggregatesFilter<"Advertisement"> | string
   linkUrl?: Prisma.StringNullableWithAggregatesFilter<"Advertisement"> | string | null
+  brandName?: Prisma.StringWithAggregatesFilter<"Advertisement"> | string
+  brandLogo?: Prisma.StringNullableWithAggregatesFilter<"Advertisement"> | string | null
   status?: Prisma.EnumAdStatusWithAggregatesFilter<"Advertisement"> | $Enums.AdStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Advertisement"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Advertisement"> | Date | string
@@ -267,6 +291,8 @@ export type AdvertisementCreateInput = {
   description: string
   imageUrl: string
   linkUrl?: string | null
+  brandName: string
+  brandLogo?: string | null
   status?: $Enums.AdStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -278,6 +304,8 @@ export type AdvertisementUncheckedCreateInput = {
   description: string
   imageUrl: string
   linkUrl?: string | null
+  brandName: string
+  brandLogo?: string | null
   status?: $Enums.AdStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -289,6 +317,8 @@ export type AdvertisementUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brandName?: Prisma.StringFieldUpdateOperationsInput | string
+  brandLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAdStatusFieldUpdateOperationsInput | $Enums.AdStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -300,6 +330,8 @@ export type AdvertisementUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brandName?: Prisma.StringFieldUpdateOperationsInput | string
+  brandLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAdStatusFieldUpdateOperationsInput | $Enums.AdStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,6 +343,8 @@ export type AdvertisementCreateManyInput = {
   description: string
   imageUrl: string
   linkUrl?: string | null
+  brandName: string
+  brandLogo?: string | null
   status?: $Enums.AdStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -322,6 +356,8 @@ export type AdvertisementUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brandName?: Prisma.StringFieldUpdateOperationsInput | string
+  brandLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAdStatusFieldUpdateOperationsInput | $Enums.AdStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,6 +369,8 @@ export type AdvertisementUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   linkUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brandName?: Prisma.StringFieldUpdateOperationsInput | string
+  brandLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumAdStatusFieldUpdateOperationsInput | $Enums.AdStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -344,6 +382,8 @@ export type AdvertisementCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
+  brandName?: Prisma.SortOrder
+  brandLogo?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -355,6 +395,8 @@ export type AdvertisementMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
+  brandName?: Prisma.SortOrder
+  brandLogo?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -366,6 +408,8 @@ export type AdvertisementMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   linkUrl?: Prisma.SortOrder
+  brandName?: Prisma.SortOrder
+  brandLogo?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -383,6 +427,8 @@ export type AdvertisementSelect<ExtArgs extends runtime.Types.Extensions.Interna
   description?: boolean
   imageUrl?: boolean
   linkUrl?: boolean
+  brandName?: boolean
+  brandLogo?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -394,6 +440,8 @@ export type AdvertisementSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   description?: boolean
   imageUrl?: boolean
   linkUrl?: boolean
+  brandName?: boolean
+  brandLogo?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -405,6 +453,8 @@ export type AdvertisementSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   description?: boolean
   imageUrl?: boolean
   linkUrl?: boolean
+  brandName?: boolean
+  brandLogo?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -416,12 +466,14 @@ export type AdvertisementSelectScalar = {
   description?: boolean
   imageUrl?: boolean
   linkUrl?: boolean
+  brandName?: boolean
+  brandLogo?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AdvertisementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "imageUrl" | "linkUrl" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["advertisement"]>
+export type AdvertisementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "imageUrl" | "linkUrl" | "brandName" | "brandLogo" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["advertisement"]>
 
 export type $AdvertisementPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Advertisement"
@@ -432,6 +484,8 @@ export type $AdvertisementPayload<ExtArgs extends runtime.Types.Extensions.Inter
     description: string
     imageUrl: string
     linkUrl: string | null
+    brandName: string
+    brandLogo: string | null
     status: $Enums.AdStatus
     createdAt: Date
     updatedAt: Date
@@ -863,6 +917,8 @@ export interface AdvertisementFieldRefs {
   readonly description: Prisma.FieldRef<"Advertisement", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Advertisement", 'String'>
   readonly linkUrl: Prisma.FieldRef<"Advertisement", 'String'>
+  readonly brandName: Prisma.FieldRef<"Advertisement", 'String'>
+  readonly brandLogo: Prisma.FieldRef<"Advertisement", 'String'>
   readonly status: Prisma.FieldRef<"Advertisement", 'AdStatus'>
   readonly createdAt: Prisma.FieldRef<"Advertisement", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Advertisement", 'DateTime'>

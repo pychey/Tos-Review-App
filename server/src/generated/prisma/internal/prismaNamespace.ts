@@ -1573,6 +1573,8 @@ export const AdvertisementScalarFieldEnum = {
   description: 'description',
   imageUrl: 'imageUrl',
   linkUrl: 'linkUrl',
+  brandName: 'brandName',
+  brandLogo: 'brandLogo',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
