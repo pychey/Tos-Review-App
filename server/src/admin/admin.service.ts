@@ -9,7 +9,7 @@ export class AdminService {
     return this.prisma.post.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
-        author: { select: { id: true, name: true, email: true } },
+        author: { select: { id: true, name: true, email: true, profileSrc: true } },
         _count: { select: { likes: true, comments: true, ratings: true } },
       },
     });
@@ -31,6 +31,7 @@ export class AdminService {
         role: true,
         provider: true,
         createdAt: true,
+        profileSrc: true,
         _count: { select: { posts: true, followers: true, following: true } },
       },
     });

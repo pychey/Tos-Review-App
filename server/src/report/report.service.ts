@@ -24,7 +24,7 @@ export class ReportService {
     return this.prisma.report.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
-        post: { select: { id: true, productName: true, authorId: true } },
+        post: { select: { id: true, productName: true, mediaUrls: true, author: {select: {name: true, profileSrc: true}} } },
         user: { select: { id: true, name: true, email: true } },
       },
     });
