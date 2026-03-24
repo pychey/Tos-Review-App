@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:client/data/models/comment.dart';
 import 'package:client/services/comment_service.dart';
 import 'package:client/ui/theme/theme.dart';
 import 'package:client/ui/widgets/displays/comment.dart';
-import 'package:flutter/material.dart';
 
 class CommentView extends StatefulWidget {
   final List<Comment> comments;
@@ -20,7 +20,7 @@ class CommentView extends StatefulWidget {
     required this.onSend,
     required this.onDelete,
     required this.onLike,
-    required this.onEdit, 
+    required this.onEdit,
     this.currentUserId,
   });
 
@@ -30,8 +30,8 @@ class CommentView extends StatefulWidget {
 
 class _CommentViewState extends State<CommentView> {
   final TextEditingController commentController = TextEditingController();
-
   List<Comment> _localComments = [];
+  Comment? replyingTo;
 
   @override
   void initState() {
@@ -44,10 +44,33 @@ class _CommentViewState extends State<CommentView> {
     setState(() => _localComments = updated);
   }
 
-  @override
-  void dispose() {
-    commentController.dispose();
-    super.dispose();
+  Future<void> _handleSend() async {
+    final text = commentController.text.trim();
+    if (text.isEmpty) return;
+
+    if (replyingTo != null) {
+      // Add reply locally
+      setState(() {
+        replyingTo!.replys.add(
+          Comment(
+            id: DateTime.now().toString(),
+            content: text,
+            author: CommentAuthor(
+                id: widget.currentUserId ?? "me", name: "You"),
+            likeCount: 0,
+            createdAt: DateTime.now(),
+            isLiked: false,
+          ),
+        );
+      });
+    } else {
+      // Normal comment
+      await widget.onSend(text);
+      _refreshComments();
+    }
+
+    commentController.clear();
+    setState(() => replyingTo = null);
   }
 
   @override
@@ -60,58 +83,71 @@ class _CommentViewState extends State<CommentView> {
             padding: EdgeInsets.symmetric(vertical: 35, horizontal: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
-              ),
+                  topLeft: Radius.circular(40), topRight: Radius.circular(40)),
               color: TosReviewColors.primary,
             ),
-            child: Text('${_localComments.length} comments', style: TosReviewTextStyles.labelBold.copyWith(color: Colors.white)),
+            child: Text('${_localComments.length} comments',
+                style:
+                    TosReviewTextStyles.labelBold.copyWith(color: Colors.white)),
           ),
           Padding(
             padding: EdgeInsets.all(20),
             child: Column(
-              children: [
-                ..._localComments.map((c) => CommentWidget(
-                  comment: c,
-                  onLike: () async {
-                    await widget.onLike(c.id);
-                    await _refreshComments();
-                  },
-                  onEdit: () async {
-                    await widget.onEdit(c.id, c.content);
-                    await _refreshComments();
-                  },
-                  onDelete: () async {
-                    await widget.onDelete(c.id);
-                    await _refreshComments();
-                  },
-                  currentUserId: widget.currentUserId,
-                )),
-              ],
+              children: _localComments
+                  .map((c) => CommentWidget(
+                        comment: c,
+                        onLike: () async {
+                          await widget.onLike(c.id);
+                          await _refreshComments();
+                        },
+                        onEdit: () async {
+                          await widget.onEdit(c.id, c.content);
+                          await _refreshComments();
+                        },
+                        onDelete: () async {
+                          await widget.onDelete(c.id);
+                          await _refreshComments();
+                        },
+                        currentUserId: widget.currentUserId,
+                        onReply: () {
+                          setState(() => replyingTo = c);
+                        },
+                      ))
+                  .toList(),
             ),
           ),
-          Divider(),
+          if (replyingTo != null)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Text("Replying to ${replyingTo!.author.name}",
+                          style: TextStyle(color: Colors.grey))),
+                  IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () => setState(() => replyingTo = null))
+                ],
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(width: TosReviewSpacings.s),
                 Expanded(
                   child: TextFormField(
                     controller: commentController,
                     decoration: InputDecoration(
                       suffixIcon: GestureDetector(
-                        onTap: () async {
-                          await widget.onSend(commentController.text);
-                          commentController.clear();
-                          await _refreshComments();
-                        },
-                        child: Icon(Icons.send, size: 20, color: TosReviewColors.primary),
+                        onTap: _handleSend,
+                        child: Icon(Icons.send,
+                            size: 20, color: TosReviewColors.primary),
                       ),
+                      hintText: replyingTo == null
+                          ? "Add a comment"
+                          : "Write a reply...",
                       fillColor: Colors.white,
                       filled: true,
-                      hintText: "Add a comment",
                       isDense: true,
                       hintStyle: TextStyle(color: TosReviewColors.greyDark),
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),

@@ -20,6 +20,7 @@ class Comment {
   final int likeCount;
   final DateTime createdAt;
   final bool isLiked;
+  List<Comment> replys;
 
   Comment({
     required this.id,
@@ -29,7 +30,8 @@ class Comment {
     required this.likeCount,
     required this.createdAt,
     required this.isLiked,
-  });
+    List<Comment>? replys
+  }) : replys = replys ?? [];
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
     id: json['id'],

@@ -9,9 +9,8 @@ class ReplyWidget extends StatefulWidget {
   final Future<void> Function()? onLike;
   final Future<void> Function()? onEdit;
   final Future<void> Function()? onDelete;
-  final VoidCallback? onReply;
   final String? currentUserId;
-  const ReplyWidget({super.key, required this.comment, this.onLike, this.onEdit, this.onDelete, this.currentUserId, this.onReply});
+  const ReplyWidget({super.key, required this.comment, this.onLike, this.onEdit, this.onDelete, this.currentUserId});
 
   @override
   State<ReplyWidget> createState() => _ReplyWidgetState();
@@ -51,7 +50,6 @@ class _ReplyWidgetState extends State<ReplyWidget> {
     return '${diff.inDays} d';
   }
 
-  bool _showReply = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -93,10 +91,6 @@ class _ReplyWidgetState extends State<ReplyWidget> {
                   const SizedBox(width: 50),
                   Text(_timeAgo(widget.comment.createdAt), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
                   const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: widget.onReply,
-                    child: Text("Reply", style: TosReviewTextStyles.body)
-                  ),
                   const SizedBox(width: 10),
                   GestureDetector(
                     onTap: widget.onLike,
