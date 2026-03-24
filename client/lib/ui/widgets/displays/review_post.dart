@@ -46,10 +46,63 @@ class _ReviewPostState extends State<ReviewPost> {
     } catch (_) {}
   }
 
+  OverlayEntry? _overlayEntry;
+  void _showPopup(BuildContext context) {
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50, // position of popup
+        left: 10,
+        right: 10,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black87,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Product name: ${widget.post.productName}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Description: ${widget.post.description}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Price: \$${widget.post.price}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Location: ${widget.post.location}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Likes: ${widget.post.count.likes}',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _hidePopup() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onPress,
+      onLongPressStart: (_) => _showPopup(context),  
+      onLongPressEnd: (_) => _hidePopup(),     
       child: Stack(
         children: [
           ClipRRect(

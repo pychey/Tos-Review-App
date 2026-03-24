@@ -1,23 +1,23 @@
-import 'package:client/ui/screens/profile/user_profile.dart';
-import 'package:client/ui/widgets/displays/reply.dart';
 import 'package:flutter/material.dart';
-import '../../theme/theme.dart';
-import 'package:client/data/models/comment.dart';
 
-class CommentWidget extends StatefulWidget {
+import '../../../data/models/comment.dart';
+import '../../screens/profile/user_profile.dart';
+import '../../theme/theme.dart';
+
+class ReplyWidget extends StatefulWidget {
   final Comment comment;
   final Future<void> Function()? onLike;
   final Future<void> Function()? onEdit;
   final Future<void> Function()? onDelete;
+  final VoidCallback? onReply;
   final String? currentUserId;
-
-  const CommentWidget({super.key, required this.comment, this.onLike, this.onEdit, this.onDelete, this.currentUserId});
+  const ReplyWidget({super.key, required this.comment, this.onLike, this.onEdit, this.onDelete, this.currentUserId, this.onReply});
 
   @override
-  State<CommentWidget> createState() => _CommentWidgetState();
+  State<ReplyWidget> createState() => _ReplyWidgetState();
 }
 
-class _CommentWidgetState extends State<CommentWidget> {
+class _ReplyWidgetState extends State<ReplyWidget> {
   void _showOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -44,7 +44,6 @@ class _CommentWidgetState extends State<CommentWidget> {
       ),
     );
   }
-
   String _timeAgo(DateTime date) {
     final diff = DateTime.now().difference(date);
     if (diff.inMinutes < 60) return '${diff.inMinutes} mn';
@@ -53,21 +52,6 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   bool _showReply = false;
-  void _toggleReply() => setState(() => _showReply = !_showReply);
-  List<Comment> replys = [
-    // Comment(id: "123gfdsfdsadf", content: "Fdsfasfdsafd", author: CommentAuthor(id: "fdsafdsaf", name: "Menghan"), likeCount: 5, createdAt: DateTime.now(), isLiked: true)
-  ];
-  void onReply(){
-    setState(() {
-      replys.add(Comment(id: "123gfdsfdsadf", content: "Fdsfasfdsafd", author: CommentAuthor(id: "fdsafdsaf", name: "Menghan"), likeCount: 5, createdAt: DateTime.now(), isLiked: true));
-    });
-    if(replys.isNotEmpty){
-      setState(() {
-        _showReply = true;
-      });
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -103,7 +87,6 @@ class _CommentWidgetState extends State<CommentWidget> {
           ),
           const SizedBox(height: TosReviewSpacings.s),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -111,7 +94,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   Text(_timeAgo(widget.comment.createdAt), style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
                   const SizedBox(width: 10),
                   GestureDetector(
-                    onTap: onReply,
+                    onTap: widget.onReply,
                     child: Text("Reply", style: TosReviewTextStyles.body)
                   ),
                   const SizedBox(width: 10),
@@ -128,36 +111,6 @@ class _CommentWidgetState extends State<CommentWidget> {
                       child: Icon(Icons.more_horiz, size: 20),
                     ),          
                 ],
-              ),
-              const SizedBox(height: TosReviewSpacings.s,),
-              if(replys.isNotEmpty) Row(
-                children: [
-                  const SizedBox(width: 50),
-                  GestureDetector(
-                    onTap: _toggleReply,
-                    child: Text(_showReply ? "Hide reply" : "Show reply", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark))
-                  ),
-                ],
-              ),
-              AnimatedSize(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                child: _showReply
-                    ? Padding(
-                        padding: const EdgeInsets.only(left: 50, top: TosReviewSpacings.s),
-                        child: ListView.builder(
-                          shrinkWrap: true, // important!
-                          physics: const NeverScrollableScrollPhysics(), // prevent scroll inside column
-                          itemCount: replys.length,
-                          itemBuilder: (context, index) {
-                            return ReplyWidget(
-                              comment: replys[index],
-                              onReply: onReply,
-                            );
-                          },
-                        ),
-                      )
-                    : const SizedBox.shrink(),
               ),
             ],
           )
