@@ -46,7 +46,7 @@ class _SearchState extends State<Search> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
             child: Column(
               children: [
                 Padding(

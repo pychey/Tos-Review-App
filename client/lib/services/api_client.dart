@@ -5,7 +5,7 @@ final storage = FlutterSecureStorage();
 
 Dio createDio() {
   final dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.43.70:3000', // DAK IP TUSAB
+    baseUrl: 'http://192.168.1.49:3000', // DAK IP TUSAB
     contentType: 'application/json',
   ));
 

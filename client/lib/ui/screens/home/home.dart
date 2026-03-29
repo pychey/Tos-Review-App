@@ -1,10 +1,11 @@
-import 'package:client/data/models/post.dart';
 import 'package:client/services/post_service.dart';
 import 'package:client/ui/screens/inspect_post/inspect_post.dart';
 import 'package:client/ui/screens/search/search.dart';
 import 'package:client/ui/widgets/displays/review_post.dart';
 import 'package:flutter/material.dart';
 import '../../theme/theme.dart';
+import 'package:client/data/models/feed_item.dart';
+import 'package:client/ui/widgets/displays/ad_card.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,7 +15,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Post> _posts = [];
+  List<FeedItem> _posts = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
   bool _hasMore = true;
@@ -84,70 +85,72 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: TosReviewColors.primary))
-          : SafeArea(
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                    sliver: SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("All", style: TosReviewTextStyles.labelBold.copyWith(color: TosReviewColors.primary)),
-                            GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Search()),
-                              ),
-                              child: Icon(Icons.search, size: 30),
-                            ),
-                          ],
+          : CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                sliver: SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("All", style: TosReviewTextStyles.labelBold.copyWith(color: TosReviewColors.primary)),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Search()),
+                          ),
+                          child: Icon(Icons.search, size: 30),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return ReviewPost(
-                            onPress: () => onPressPost(_posts[index].id),
-                            post: _posts[index],
-                          );
-                        },
-                        childCount: _posts.length,
-                      ),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                        childAspectRatio: 0.7,
-                      ),
-                    ),
-                  ),
-                  if (_isLoadingMore)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Center(child: CircularProgressIndicator(color: TosReviewColors.primary)),
-                      ),
-                    ),
-                  if (!_hasMore && _posts.isNotEmpty)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Center(
-                          child: Text("No more posts", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
-                        ),
-                      ),
-                    ),
-                ],
+                ),
               ),
-            ),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final item = _posts[index];
+                      return switch (item) {
+                        PostFeedItem(:final post) => ReviewPost(
+                            onPress: () => onPressPost(post.id),
+                            post: post,
+                          ),
+                        AdFeedItem(:final ad) => AdCard(ad: ad),
+                      };
+                    },
+                    childCount: _posts.length,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    childAspectRatio: 0.7,
+                  ),
+                ),
+              ),
+              if (_isLoadingMore)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Center(child: CircularProgressIndicator(color: TosReviewColors.primary)),
+                  ),
+                ),
+              if (!_hasMore && _posts.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Center(
+                      child: Text("No more posts", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark)),
+                    ),
+                  ),
+                ),
+            ],
+          ),
     );
   }
 }

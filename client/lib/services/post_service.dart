@@ -2,18 +2,20 @@ import 'package:client/data/models/post.dart';
 import 'package:client/services/api_client.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:client/data/models/ad.dart';
+import 'package:client/data/models/feed_item.dart';
 
 class PostService {
-  Future<List<Post>> getFeed({int page = 1, int limit = 10}) async {
+  Future<List<FeedItem>> getFeed({int page = 1, int limit = 10}) async {
     final response = await dio.get('/api/feed', queryParameters: {
       'page': page,
       'limit': limit,
     });
     final List data = response.data;
-    return data
-        .where((item) => item['type'] == 'POST')
-        .map((item) => Post.fromJson(item))
-        .toList();
+    return data.map((item) {
+      if (item['type'] == 'AD') return AdFeedItem(Ad.fromJson(item));
+      return PostFeedItem(Post.fromJson(item));
+    }).toList();
   }
 
   Future<Post> getPostById(String id) async {
@@ -96,10 +98,14 @@ class PostService {
   }
 
   Future<void> reportPost(String postId, String reason, {String? details}) async {
-    await dio.post('/api/reports/$postId', data: {
+    final response = await dio.post('/api/reports/$postId', data: {
       'reason': reason,
       if (details != null && details.isNotEmpty) 'details': details,
     });
+    
+    if (response.statusCode == 400) {
+      throw Exception(response.data['message'] ?? 'Already reported');
+    }
   }
 
   Future<List<Post>> getViewHistory() async {

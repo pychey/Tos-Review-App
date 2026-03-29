@@ -110,7 +110,7 @@ class _ProfileState extends State<Profile> {
               child: Center(
                 child: GestureDetector(
                   onTap: onShareProfile,
-                  child: Icon(Icons.ios_share, size: 25,)
+                  child: Icon(Icons.logout, size: 25,)
                 ),
               ),
             ),

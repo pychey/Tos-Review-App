@@ -88,7 +88,7 @@ class _AppRootState extends State<AppRoot> {
           
         ];
     return Scaffold(
-      body: screens[_currentTabIndex],
+      body: SafeArea(child: screens[_currentTabIndex]),
       extendBody: true,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 20), 

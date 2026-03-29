@@ -142,73 +142,75 @@ class _LoginState extends State<Login> {
     super.dispose();      
   }
   Widget mainWidget(){
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/logo_image.png', height: 100,),
-                const SizedBox(height: TosReviewSpacings.m),
-                Text("Welcome Back!", style: TosReviewTextStyles.heading),
-                const SizedBox(height: 5),
-                Text("Sign in to access real , honestly Rate Review mode for you", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark), textAlign: TextAlign.center,),
-                const SizedBox(height: TosReviewSpacings.l,),
-                CustomTextField(label: "Email Address", hintText: "Enter your email", text: emailController, validator: validateEmail, isRequired: true,),
-                const SizedBox(height: TosReviewSpacings.m),
-                CustomTextField(label: "Password", hintText: "Enter your password", text: passwordController, validator: validatePassword, isPassword: true, isRequired: true,),
-                const SizedBox(height: TosReviewSpacings.m),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isChecked,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isChecked = value!;
-                            });
-                          },
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          visualDensity: VisualDensity.compact, 
-                        ),
-                      Text("Remember me", style: TosReviewTextStyles.body),
-                      ]
-                    ),
-                    GestureDetector(
-                      onTap: onForgetPassword,
-                      child: Text("Forget Password?", style: TosReviewTextStyles.body)
-                    )
-                  ],
-                ),
-                const SizedBox(height: TosReviewSpacings.m),
-                CustomButton(onPress: onLogin, name: "Log in", isLong: true, isRoundBorderRaduis: false,),
-                const SizedBox(height: TosReviewSpacings.m),
-                Devider(),
-                const SizedBox(height: TosReviewSpacings.m),
-                GoogleLogin(onPress: onPressGoogle),
-                const SizedBox(height: TosReviewSpacings.m),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark, fontFamily: 'Montserrat'),
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/logo_image.png', height: 100,),
+                  const SizedBox(height: TosReviewSpacings.m),
+                  Text("Welcome Back!", style: TosReviewTextStyles.heading),
+                  const SizedBox(height: 5),
+                  Text("Sign in to access real , honestly Rate Review mode for you", style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark), textAlign: TextAlign.center,),
+                  const SizedBox(height: TosReviewSpacings.l,),
+                  CustomTextField(label: "Email Address", hintText: "Enter your email", text: emailController, validator: validateEmail, isRequired: true,),
+                  const SizedBox(height: TosReviewSpacings.m),
+                  CustomTextField(label: "Password", hintText: "Enter your password", text: passwordController, validator: validatePassword, isPassword: true, isRequired: true,),
+                  const SizedBox(height: TosReviewSpacings.m),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextSpan(text: "Don’t You have an Account? "),
-                      TextSpan(
-                        text: "Sign up",
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = onSignUp,
-                        style: TextStyle(color: TosReviewColors.primary, decoration: TextDecoration.underline,)),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: isChecked,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isChecked = value!;
+                              });
+                            },
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact, 
+                          ),
+                        Text("Remember me", style: TosReviewTextStyles.body),
+                        ]
+                      ),
+                      GestureDetector(
+                        onTap: onForgetPassword,
+                        child: Text("Forget Password?", style: TosReviewTextStyles.body)
+                      )
                     ],
                   ),
-                )
-              ],
-            ),
-          )
-        ],
+                  const SizedBox(height: TosReviewSpacings.m),
+                  CustomButton(onPress: onLogin, name: "Log in", isLong: true, isRoundBorderRaduis: false,),
+                  const SizedBox(height: TosReviewSpacings.m),
+                  Devider(),
+                  const SizedBox(height: TosReviewSpacings.m),
+                  GoogleLogin(onPress: onPressGoogle),
+                  const SizedBox(height: TosReviewSpacings.m),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TosReviewTextStyles.body.copyWith(color: TosReviewColors.greyDark, fontFamily: 'Montserrat'),
+                      children: [
+                        TextSpan(text: "Don’t You have an Account? "),
+                        TextSpan(
+                          text: "Sign up",
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = onSignUp,
+                          style: TextStyle(color: TosReviewColors.primary, decoration: TextDecoration.underline,)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

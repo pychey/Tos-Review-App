@@ -96,7 +96,7 @@ class Post {
       productName: productName,
       description: description,
       authorRating: authorRating,
-      avgUserRating: avgUserRating,
+      avgUserRating: avgUserRating ?? this.avgUserRating,
       price: price,
       location: location,
       productUrl: productUrl,
