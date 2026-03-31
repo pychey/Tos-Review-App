@@ -72,4 +72,10 @@ export class AdminController {
   toggleAdStatus(@Param('id') id: string) {
     return this.adService.toggleAdStatus(id);
   }
+
+  @ApiOperation({ summary: 'Get flagged posts by fraud detection' })
+  @Get('flagged-posts')
+  getFlaggedPosts() {
+    return this.adminService.getFlaggedPosts();
+  }
 }

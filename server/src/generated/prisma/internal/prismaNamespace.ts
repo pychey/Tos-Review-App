@@ -1458,7 +1458,11 @@ export const PostScalarFieldEnum = {
   viewCount: 'viewCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  isAnonymous: 'isAnonymous'
+  isAnonymous: 'isAnonymous',
+  riskLevel: 'riskLevel',
+  riskConfidence: 'riskConfidence',
+  riskReason: 'riskReason',
+  riskRules: 'riskRules'
 } as const
 
 export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]

@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Category } from 'src/generated/prisma/enums';
 import { formatPost, postInclude } from './post.utils';
+import axios from 'axios';
 
 @Injectable()
 export class PostService {
@@ -17,7 +18,49 @@ export class PostService {
       include: postInclude,
     });
 
-    return formatPost(post, userId);
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          _count: { select: { posts: true } },
+          createdAt: true,
+        },
+      });
+
+      const accountAgeInYears = user
+        ? (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 365)
+        : null;
+
+      const fraudResponse = await axios.post('http://localhost:8000/predict', {
+        text: dto.description,
+        rating: dto.authorRating,
+        review_count: user?._count.posts ?? null,
+        account_age: accountAgeInYears,
+      });
+
+      const { risk_level, confidence, explanation, signals } = fraudResponse.data;
+
+      await this.prisma.post.update({
+        where: { id: post.id },
+        data: {
+          riskLevel: risk_level,
+          riskConfidence: confidence,
+          riskReason: explanation,
+          riskRules: signals?.applied_rules ?? [],
+        },
+      });
+
+      return formatPost({
+        ...post,
+        riskLevel: risk_level,
+        riskConfidence: confidence,
+        riskReason: explanation,
+        riskRules: signals?.applied_rules ?? [],
+      }, userId);
+    } catch (e) {
+      console.warn('[FraudAPI] Skipped:', e.message);
+      return formatPost(post, userId);
+    }
   }
 
   async getPostById(postId: string, userId: string) {

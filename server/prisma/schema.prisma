@@ -105,6 +105,10 @@ model Post {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   isAnonymous Boolean @default(false)
+  riskLevel      String?
+  riskConfidence Float?
+  riskReason     String?
+  riskRules      String[]
 
   author        User           @relation(fields: [authorId], references: [id])
   comments      Comment[]

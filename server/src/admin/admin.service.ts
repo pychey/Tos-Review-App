@@ -48,4 +48,17 @@ export class AdminService {
       select: { id: true, name: true, email: true, role: true },
     });
   }
+
+  getFlaggedPosts() {
+    return this.prisma.post.findMany({
+      where: {
+        riskLevel: { in: ['medium', 'high'] },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        author: { select: { id: true, name: true, email: true, profileSrc: true } },
+        _count: { select: { likes: true, comments: true, ratings: true } },
+      },
+    });
+  }
 }

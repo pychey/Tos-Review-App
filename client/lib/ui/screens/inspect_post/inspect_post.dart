@@ -222,23 +222,20 @@ class _InspectPostState extends State<InspectPost> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: TosReviewColors.primary),
                   onPressed: selectedReason == null ? null : () async {
+                    final scaffoldMessenger = ScaffoldMessenger.of(context);
                     Navigator.pop(context);
                     try {
                       await postService.reportPost(
                         widget.postId, selectedReason!,
                         details: detailsController.text,
                       );
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                      scaffoldMessenger.showSnackBar(
                         const SnackBar(content: Text('Post reported successfully')),
                       );
-                      }
                     } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                      scaffoldMessenger.showSnackBar(
                         const SnackBar(content: Text('You have already reported this post')),
                       );
-                      }
                     }
                   },
                   child: const Text('Submit', style: TextStyle(color: Colors.white)),
