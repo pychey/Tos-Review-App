@@ -52,7 +52,7 @@ export class AdminService {
   getFlaggedPosts() {
     return this.prisma.post.findMany({
       where: {
-        riskLevel: { in: ['medium', 'high'] },
+        riskLevel: { not: null },
       },
       orderBy: { createdAt: 'desc' },
       include: {

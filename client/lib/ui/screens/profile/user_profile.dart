@@ -50,6 +50,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _toggleFollow() async {
     final result = await followService.followUser(widget.userId);
     setState(() => _isFollowing = result);
+    _loadProfile();
   }
 
   void onFollowing() {

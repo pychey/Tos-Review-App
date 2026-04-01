@@ -27,15 +27,15 @@ export class PostService {
         },
       });
 
-      const accountAgeInYears = user
-        ? (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 365)
+      const accountAgeInDays = user
+        ? (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)
         : null;
 
       const fraudResponse = await axios.post('http://localhost:8000/predict', {
         text: dto.description,
         rating: dto.authorRating,
         review_count: user?._count.posts ?? null,
-        account_age: accountAgeInYears,
+        account_age: accountAgeInDays,
       });
 
       const { risk_level, confidence, explanation, signals } = fraudResponse.data;

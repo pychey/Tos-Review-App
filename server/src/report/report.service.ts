@@ -33,15 +33,15 @@ export class ReportService {
     try {
       const reportCount = await this.prisma.report.count({ where: { postId } });
 
-      const accountAgeInYears =
+      const accountAgeInDays =
         (Date.now() - new Date(post.author.createdAt).getTime()) /
-        (1000 * 60 * 60 * 24 * 365);
+        (1000 * 60 * 60 * 24);
 
       const response = await axios.post('http://localhost:8000/predict', {
         text: post.description,
         rating: post.authorRating,
         review_count: post.author._count.posts,
-        account_age: accountAgeInYears,
+        account_age: accountAgeInDays,
         report_count: reportCount,
       });
 

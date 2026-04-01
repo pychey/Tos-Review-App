@@ -453,7 +453,7 @@ const postData = [
   // ── JAPANESE BEAUTY ──────────────────────────────────────
   {
     productName: 'Hada Labo Gokujyun Hyaluronic Acid Lotion',
-    description: 'Japanese drugstore holy grail. This lotion contains 3 types of hyaluronic acid that hydrate skin at multiple layers. My skin visibly plumped up after one week of use. Very lightweight and fragrance free. Perfect base before moisturizer. Affordable and incredibly effective.',
+    description: 'Amazing Japanese',
     authorRating: 5,
     category: 'BEAUTY' as const,
     price: 14.00,
@@ -483,7 +483,7 @@ const postData = [
   },
   {
     productName: 'SK-II Facial Treatment Essence',
-    description: 'Luxury Japanese skincare at its finest. The Pitera essence is legendary and for good reason. My skin texture improved dramatically after one month. Pores look smaller and skin tone is more even. Expensive but absolutely worth it for a special treat.',
+    description: 'Amazing',
     authorRating: 5,
     category: 'BEAUTY' as const,
     price: 180.00,
@@ -560,7 +560,7 @@ const postData = [
   },
   {
     productName: 'Muji Portable Aroma Diffuser',
-    description: 'Minimalist Japanese design meets practical function. Small enough to fit in a bag and runs on USB. The ultrasonic mist is gentle and spreads scent perfectly in a small room. I use it at my desk while working. Pairs beautifully with Muji essential oils. Very zen.',
+    description: 'Amazing Amazing',
     authorRating: 4,
     category: 'OTHER' as const,
     price: 28.00,
@@ -634,6 +634,12 @@ async function main() {
 
   // Users
   const hashedPassword = await bcrypt.hash('Demo@1234', 10);
+
+  const randomPastDate = (maxDaysAgo: number) => {
+    const ms = Math.random() * maxDaysAgo * 24 * 60 * 60 * 1000;
+    return new Date(Date.now() - ms);
+  };
+
   const users = await Promise.all(
     userData.map((u) =>
       prisma.user.create({
@@ -644,11 +650,13 @@ async function main() {
           provider: 'LOCAL',
           profileSrc: u.profileSrc,
           bio: 'Love reviewing products and sharing honest opinions.',
-          role: u.role ?? 'USER'
+          role: u.role ?? 'USER',
+          createdAt: randomPastDate(14),
         },
       }),
     ),
   );
+  
   console.log(`Created ${users.length} users`);
 
   // Posts
